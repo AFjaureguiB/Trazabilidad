@@ -16,7 +16,7 @@ import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
 /** El enrutador principal */
-//import indexRoutes from "./routes/index.routes.js";
+import indexRoutes from "./routes/index.routes.js";
 
 // Importa el archivo 'configDB.js' para crear la conexión a la base de datos
 import { setupDB } from "./config/configDB.js";
@@ -48,7 +48,7 @@ async function setupServer() {
 
     // Agrega el enrutador principal al servidor
     // Agrega el enrutador principal al servidor
-    //server.use("/api", indexRoutes);
+    server.use("/api", indexRoutes);
 
     // Inicia el servidor en el puerto especificado
     server.listen(SERVER_PORT, () => {
