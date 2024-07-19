@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon src/server.js",
     "dev": "nodemon src/server.js"
@@ -18,6 +19,7 @@
     "express": "^4.19.2",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
     "mysql2": "^3.10.3",
     "sequelize": "^6.37.3"
   },
