@@ -19,19 +19,19 @@ function LoginForm() {
 
   return (
     <div className="h-[calc(100vh-64px)] flex items-center justify-center">
-      <div className="flex flex-col md:flex-row items-center justify-between w-9/10">
+      <div className="flex flex-col md:flex-row items-center justify-between w-9/10 gap-16">
         <img src="/logoFHD.png" className="w-1/2 h-auto object-contain mr-1" />
-        <div className="p-14 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2">
+        <div className= "p-14 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2 bg-gray-200/80">
           <form
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex flex-col space-y-4"
           >
             <div>
               <label
-                for="username"
-                class="block mb-2 text-sm font-medium text-gray-900"
+                htmlFor="username"
+                className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Username
+                Username:
               </label>
               <input
                 id="username"
@@ -39,16 +39,15 @@ function LoginForm() {
                 name="username"
                 required
                 type="text"
-                placeholder="John123"
                 {...register("username", { required: true })}
               />
             </div>
             <div>
               <label
-                for="password"
-                class="block mb-2 text-sm font-medium text-gray-900"
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-gray-900"
               >
-                Username
+                Password:
               </label>
               <input
                 id="password"
@@ -62,7 +61,7 @@ function LoginForm() {
             {errors.exampleRequired && <span>This field is required</span>}
             <input
               type="submit"
-              className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2" value="Ingresar"
             />
           </form>
         </div>
