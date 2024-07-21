@@ -5,10 +5,10 @@ import { Router } from "express";
 import authRoutes from "./auth.routes.js";
 
 /** Enrutador de usuarios  */
-//import userRoutes from "./user.routes.js";
+import userRoutes from "./user.routes.js";
 
 /** Middleware de autenticación */
-//import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
 /** Instancia del enrutador */
 const router = Router();
@@ -16,7 +16,7 @@ const router = Router();
 // Define las rutas para la autenticación /api/auth
 router.use("/auth", authRoutes);
 // Define las rutas para los usuarios /api/usuarios
-//router.use("/users", authenticationMiddleware, userRoutes);
+router.use("/users", authenticationMiddleware, userRoutes);
 
 // Exporta el enrutador
 export default router;
