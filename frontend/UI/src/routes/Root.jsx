@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../services/auth.service";
 import { AuthProvider, useAuth } from "../context/AuthContext";
-
+import Header from "../components/Header";
 function Root() {
   return (
     <AuthProvider>
@@ -24,7 +24,7 @@ function PageRoot() {
   return (
     <div>
       <div className="space-y-4">
-        <div>
+        {/* <div>
           <h1>Aqui deberia ir un header</h1>
           <p>Estas logeado como: {user.username}</p>
           <p>El rol es: {user.role}</p>
@@ -35,7 +35,8 @@ function PageRoot() {
           onClick={handleLogout}
         >
           Cerrar sesion
-        </button>
+        </button> */}
+        <Header user={user} handleLogout={handleLogout}/>
       </div>
       <Outlet />
     </div>
