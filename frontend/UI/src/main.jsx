@@ -7,6 +7,7 @@ import ErrorPage from "./routes/ErrorPage.jsx";
 import Login from "./routes/Login.jsx";
 import App from "./routes/App.jsx";
 import ProtectedRoute from "./guard/ProtectedRoute.jsx";
+import AdminUsers from "./routes/AdminUsers.jsx";
 
 import "./index.css";
 
@@ -24,7 +25,7 @@ const router = createBrowserRouter([
         path: "/administrar-usuarios",
         element: (
           <ProtectedRoute>
-            <h1>/administrar-usuarios</h1>,
+            <AdminUsers />
           </ProtectedRoute>
         ),
       },

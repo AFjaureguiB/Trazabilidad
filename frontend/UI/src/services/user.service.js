@@ -23,3 +23,30 @@ export const getUsers = async () => {
     };
   }
 };
+
+export const deleteUserById = async (userId) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const URL = `/users/${userId}`;
+    console.log(URL);
+    const response = await axios.delete(URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(response);
+    const { status, data } = response;
+
+    if (status === 200) {
+      return data.data;
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      message: error.message,
+    };
+  }
+};

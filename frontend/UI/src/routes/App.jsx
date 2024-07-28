@@ -1,20 +1,9 @@
-import { useEffect, useState } from "react";
-import { getUsers } from "../services/user.service";
 import { useAuth } from "../context/AuthContext";
 import UsersCard from "../components/UsersCard";
 
 function App() {
-  const [users, setUsers] = useState([]);
 
-  const { user } = useAuth();
-
-  useEffect(() => {
-    if (user.role !== "ADMIN") return;
-    (async () => {
-      const res = await getUsers();
-      setUsers(res);
-    })();
-  }, []);
+  const { user, users } = useAuth();
 
   if (user.role === "ADMIN") {
     return <UsersCard users={users} />;
