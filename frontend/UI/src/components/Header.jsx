@@ -3,7 +3,9 @@ import LogoFundonemos from "../icons/Logo";
 export default function Header({ user, handleLogout }) {
   return (
     <nav className="bg-slate-900 flex justify-between items-center p-4">
-      <LogoFundonemos />
+      <a href="/">
+        <LogoFundonemos />
+      </a>
       <div className="flex items-center gap-8">
         <div className="flex items-center gap-4">
           <span className="relative size-10 overflow-hidden bg-gray-100 rounded-full block">

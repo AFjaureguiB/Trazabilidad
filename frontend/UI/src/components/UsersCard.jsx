@@ -7,7 +7,7 @@ export default function UsersCard({ users }) {
             Usuarios
           </h5>
           <a
-            href="#"
+            href="/administrar-usuarios"
             className="text-sm font-medium text-blue-600 hover:underline flex gap-1"
           >
             Administrar
