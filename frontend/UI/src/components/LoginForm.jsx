@@ -36,7 +36,7 @@ function LoginForm() {
               className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 w-full"
               role="alert"
             >
-              <span className="font-medium">Opps!</span> {feedBack}
+              <span className="font-medium">Oops!</span> {feedBack}
             </div>
           )}
           <form
