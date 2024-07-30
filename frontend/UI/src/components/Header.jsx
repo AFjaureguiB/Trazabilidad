@@ -29,7 +29,7 @@ export default function Header({ user, handleLogout }) {
           </div>
         </div>
         <button
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-center text-white bg-blue-900 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300"
+          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-center text-white bg-blue-900 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
           onClick={handleLogout}
         >
           <svg
