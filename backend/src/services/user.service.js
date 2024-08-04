@@ -38,7 +38,8 @@ async function getUsers(process) {
  */
 async function createUser(user) {
   try {
-    const { firstname, lastname, username, plainpassword, email, process } = user;
+    const { firstname, lastname, username, plainpassword, email, process } =
+      user;
 
     const userFound = await User.findOne({
       where: { username },
@@ -115,39 +116,37 @@ async function updateUser(id, user) {
     const userFound = await User.findByPk(id);
     if (!userFound) return [null, "El usuario no existe"];
 
-    const { firstname, lastname, username, plainpassword, newPassword, email } = user;
+    const { firstname, lastname, username, plainpassword, newPassword, email } =
+      user;
 
-    const matchPassword = await User.comparePassword(
-      plainpassword,
-      userFound.password
-    );
-
-    if (!matchPassword) {
-      return [null, "La contraseña no coincide"];
+    if (!plainpassword) {
+      await userFound.update({
+        firstname,
+        lastname,
+        username,
+        email,
+      });
     }
 
-    /*
-    const roleFound = await Role.findOne({
-      where: { name: "ASSISTANT" },
-    });
+    if (plainpassword) {
+      const matchPassword = await User.comparePassword(
+        plainpassword,
+        userFound.password
+      );
 
-    if (!roleFound) return [null, "El rol no existe"];
+      if (!matchPassword) {
+        return [null, "La contraseña no coincide"];
+      }
 
-    const processFound = await Process.findOne({
-      where: { name: process },
-    });
-
-    if (!processFound) return [null, "El proceso no existe"];
-    */
-
-    await userFound.update({
-      firstname,
-      lastname,
-      username,
-      plainpassword: newPassword,
-      password: await User.hashPassword(newPassword || plainpassword),
-      email,
-    });
+      await userFound.update({
+        firstname,
+        lastname,
+        username,
+        plainpassword: newPassword,
+        password: await User.hashPassword(newPassword || plainpassword),
+        email,
+      });
+    }
 
     await userFound.save();
 
@@ -167,16 +166,14 @@ async function updateUser(id, user) {
  */
 async function deleteUser(id) {
   try {
-
     const userFound = await User.findByPk(id);
     if (!userFound) return [null, "El usuario no existe"];
-    
+
     const username = userFound.username;
 
     await userFound.destroy();
 
     return [`El usuario ${username} ha sido eliminado`, null];
-
   } catch (error) {
     handleError(error, "user.service -> deleteUser");
   }

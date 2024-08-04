@@ -4,7 +4,12 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import UsersCard from "../components/UsersCard";
 import UserForm from "../components/UserForm";
-import { getUsers, deleteUserById, addUser } from "../services/user.service";
+import {
+  getUsers,
+  deleteUserById,
+  addUser,
+  updateUser,
+} from "../services/user.service";
 
 export default function AdminLayout() {
   const [users, setUsers] = useState([]);
@@ -43,16 +48,15 @@ export default function AdminLayout() {
     setValue("plainpassword", "");
 
     if (idUserEditing && !data.plainpassword) {
-      console.log("queremos editar un usuario");
-      console.log(data);
+      const respponse = await updateUser(data, idUserEditing);
+      console.log(respponse);
     }
 
     if (!idUserEditing && data.plainpassword) {
-      console.log("queremos agregar a un nuevo usuario");
-
       const response = await addUser(data);
       console.log(response); //Maybe colocar el mensaje de la respuesta en un toast o algo asi.
     }
+
     fetchUsers();
   };
 
@@ -77,7 +81,6 @@ export default function AdminLayout() {
     clearErrors();
     const { firstname, lastname, username, email, id } = user;
     setIdUserEditing(id);
-    //setValue("userId", id);
     setValue("firstname", firstname);
     setValue("lastname", lastname);
     setValue("username", username);
@@ -93,7 +96,7 @@ export default function AdminLayout() {
   };
 
   return (
-    <div className="w-full grid grid-cols-2 auto-rows-auto gap-8 p-8">
+    <div className="w-full grid grid-cols-2 auto-rows-auto gap-8 p-8 max-w-screen-xl mx-auto">
       <UserForm
         register={register}
         handleSubmit={handleSubmit}

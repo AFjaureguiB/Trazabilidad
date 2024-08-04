@@ -73,3 +73,26 @@ export const addUser = async (newUser) => {
     };
   }
 };
+
+export const updateUser = async (user, id) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+    const URL = `/users/${id}`;
+    const response = await axios.put(URL, user, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 200) {
+      return data.data;
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      message: error.message,
+    };
+  }
+};

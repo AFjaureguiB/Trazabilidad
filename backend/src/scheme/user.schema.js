@@ -26,7 +26,7 @@ const userBodySchema = Joi.object({
     "any.required": "El nombre de usuario es obligatorio.",
     "string.base": "El nombre de usuario debe ser de tipo string.",
   }),
-  plainpassword: Joi.string().required().min(5).messages({
+  plainpassword: Joi.string().required().min(5).allow("").messages({
     "string.empty": "La contraseña no puede estar vacía.",
     "any.required": "La contraseña es obligatoria.",
     "string.base": "La contraseña debe ser de tipo string.",
