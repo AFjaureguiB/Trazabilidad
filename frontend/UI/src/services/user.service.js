@@ -50,3 +50,26 @@ export const deleteUserById = async (userId) => {
     };
   }
 };
+
+export const addUser = async (newUser) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.post("/users", newUser, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 201) {
+      return data.data;
+    }
+  } catch (error) {
+    console.log(error);
+    return {
+      message: error.message,
+    };
+  }
+};
