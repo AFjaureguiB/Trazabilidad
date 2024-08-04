@@ -1,12 +1,9 @@
 import { useAuth } from "../context/AuthContext";
-import UsersCard from "../components/UsersCard";
-
+import AdminLayout from "../components/AdminLayout";
 function App() {
-
-  const { user, users } = useAuth();
-
+  const { user } = useAuth();
   if (user.role === "ADMIN") {
-    return <UsersCard users={users} />;
+    return <AdminLayout />;
   }
 
   return <p>Pagina principal para un usuario normal</p>;
