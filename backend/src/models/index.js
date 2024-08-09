@@ -1,6 +1,8 @@
 import Role from "./role.model.js";
 import User from "./user.model.js";
 import Process from "./process.model.js";
+import Donor from "./donor.model.js";
+import Tissue from "./tissues.model.js";
 
 //Un role lo tienen varios usuarios
 Role.hasMany(User);
@@ -12,4 +14,9 @@ Process.hasMany(User);
 //un usuario pertenece a un proceso
 User.belongsTo(Process);
 
-export { User, Role, Process };
+//un donador puede donar varias piezas
+Donor.hasMany(Tissue);
+//una pieza previene de un donador
+Tissue.belongsTo(Donor);
+
+export { User, Role, Process, Donor, Tissue };
