@@ -3,6 +3,9 @@
 // Importa el archivo 'configEnv.js' para cargar las variables de entorno
 import { SERVER_PORT, SERVER_HOST } from "./config/configEnv.js";
 
+//Importa el archivo configStaticFiles.js para cargar la funcion que configura el server para archivos estaticos
+import  setupStaticFiles  from "./config/configStaticFiles.js";
+
 // Importa el módulo 'cors' para agregar los cors
 import cors from "cors";
 
@@ -45,6 +48,9 @@ async function setupServer() {
 
     // Agregamos morgan para ver las peticiones que se hacen al servidor
     server.use(morgan("dev"));
+
+    // Configura el server para servir archivos estáticos desde el directorio 'public'
+    setupStaticFiles(server);
 
     // Agrega el enrutador principal al servidor
     // Agrega el enrutador principal al servidor
