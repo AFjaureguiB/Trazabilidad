@@ -1,0 +1,6 @@
+export const TissueStatus = {
+  QUARANTINE: "CUARENTENA",
+  IN_TESTING: "EN PRUEBAS",
+  ACCEPTED: "ACEPTADO",
+  REJECTED: "RECHAZADO",
+};
