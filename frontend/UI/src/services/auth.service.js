@@ -11,10 +11,13 @@ export const login = async ({ username, password }) => {
     const { status, data } = response;
 
     if (status === 200) {
-      const { username, role, process } = await jwtDecode(
+      const { username, role, process, processId } = await jwtDecode(
         data.data.accessToken
       );
-      localStorage.setItem("user", JSON.stringify({ username, role, process }));
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ username, role, process, processId })
+      );
       localStorage.setItem("accestkn", data.data.accessToken);
       axios.defaults.headers.common[
         "Authorization"

@@ -40,7 +40,12 @@ async function login(user) {
     }
 
     const accessToken = jwt.sign(
-      { username: userJSON.username, role: userJSON.Role.name, process: userJSON.Process.name },
+      {
+        username: userJSON.username,
+        role: userJSON.Role.name,
+        process: userJSON.Process.name,
+        processId: userJSON.ProcessId,
+      },
       ACCESS_JWT_SECRET,
       {
         expiresIn: "1d",
@@ -60,7 +65,6 @@ async function login(user) {
     handleError(error, "auth.service -> signIn");
   }
 }
-
 
 /**
  * Refresca el token de acceso
@@ -89,7 +93,12 @@ async function refresh(cookies) {
         const userJSON = userFound.toJSON();
 
         const accessToken = jwt.sign(
-          { username: userJSON.username, role: userJSON.Role.name, process: userJSON.Process.name },
+          {
+            username: userJSON.username,
+            role: userJSON.Role.name,
+            process: userJSON.Process.name,
+            processId: userJSON.ProcessId,
+          },
           ACCESS_JWT_SECRET,
           {
             expiresIn: "1d",
