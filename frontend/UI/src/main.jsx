@@ -7,8 +7,10 @@ import ErrorPage from "./routes/ErrorPage.jsx";
 import Login from "./routes/Login.jsx";
 import App from "./routes/App.jsx";
 import ProtectedRoute from "./guard/ProtectedRoute.jsx";
-import AdminUsers from "./routes/AdminUsers.jsx";
-
+import Donors from "./routes/Donors.jsx";
+import { userRoles } from "./constants/user.roles.js";
+import { userProcesses } from "./constants/user.processes.js";
+import 'react-toastify/dist/ReactToastify.css';
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -22,10 +24,13 @@ const router = createBrowserRouter([
         element: <App />,
       },
       {
-        path: "/administrar-usuarios",
+        path: "/donors",
         element: (
-          <ProtectedRoute>
-            <AdminUsers />
+          <ProtectedRoute
+            userRolesAllowed={[userRoles.ADMIN, userRoles.ASSISTANT]}
+            userProcessIdAllowed={userProcesses.DONANTES_TEJIDOS}
+          >
+            <Donors />
           </ProtectedRoute>
         ),
       },
