@@ -46,6 +46,7 @@ const Tissue = sequelize.define(
     code: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
     description: {
       type: DataTypes.STRING,

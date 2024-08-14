@@ -5,6 +5,21 @@ import { Donor, Tissue } from "../models/index.js";
 import { TissueStatus } from "../constants/TissueStatus.js";
 import { handleError } from "../utils/errorHandler.js";
 
+//helper functions para verificar la existencia de registrtos antes de realizar modificaciones cuando se sube un PDF
+export async function existDonorWithDni(dni) {
+  const donorCount = await Donor.count({
+    where: { dni },
+  });
+  return donorCount > 0;
+}
+
+export async function existTissueWithCode(code) {
+  const tissueCount = await Tissue.count({
+    where: { code },
+  });
+  return tissueCount > 0;
+}
+
 /**
  * Obtiene todos los donantes con la informacion de sus piezas de la base de datos
  * @returns {Promise} Promesa con el objeto de los donantes

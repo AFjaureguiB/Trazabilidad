@@ -9,6 +9,12 @@ import multer from "multer";
 import { donorBodySchema } from "../scheme/donor.schema.js";
 import { respondError } from "../utils/resHandler.js";
 import { getFileName } from "../utils/getFileName.js";
+
+import {
+  existDonorWithDni,
+  existTissueWithCode,
+} from "../services/donor.service.js";
+
 // Obtén __dirname en un entorno ESM
 const __filename = url.fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -49,7 +55,7 @@ export const upload = multer({
  *  se opta por crear este middleware. Una vez que multer proceso y guardo el archivo, y podemos verificar si tenemos toda la informacion
  *  para renombrarlo, y si no viene hay que borrar aquello que multer ya guardo.
  */
-export const validateFile = (req, res, next) => {
+export const validateFile = async (req, res, next) => {
   const { body: donor } = req;
 
   if (!req.file) {
@@ -78,6 +84,36 @@ export const validateFile = (req, res, next) => {
       bodyDonorError.message
     );
   }
+
+  //aqui hay que verificar si quieres agregar un DNI o un tissue.code que ya existe
+  const dniAlreadyExist = await existDonorWithDni(donor.dni);
+  if (dniAlreadyExist) {
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("Error al eliminar el archivo:", err);
+    });
+    return respondError(
+      req,
+      res,
+      400,
+      "Existen inconsistencias con la informacion",
+      "El DNI ingresado ya esta asociado a un donador"
+    );
+  }
+
+  const codeAlreadyExist = await existTissueWithCode(donor.tissue.code);
+  if (codeAlreadyExist) {
+    fs.unlink(req.file.path, (err) => {
+      if (err) console.error("Error al eliminar el archivo:", err);
+    });
+    return respondError(
+      req,
+      res,
+      400,
+      "Existen inconsistencias con la informacion",
+      "El codigo ingresado ya esta asociado a una pieza/tejido"
+    );
+  }
+
   next();
 };
 
@@ -88,7 +124,7 @@ export const renameFile = (req, res, next) => {
   const { body: donor } = req;
 
   const newFilename =
-    getFileName(donor.dni, donor.names, donor.surnames) +
+    getFileName(donor.dni, donor.tissue.code) +
     path.extname(req.file.originalname);
 
   const oldPath = path.join(
