@@ -24,15 +24,6 @@ const tissueSchema = Joi.object({
     "any.required": "El tipo de tejido es obligatorio.",
     "string.base": "El tipo de tejido debe ser de tipo string.",
   }),
- /*  status: Joi.string()
-    .required()
-    .valid("CUARENTENA", "EN PRUEBAS", "ACEPTADO", "RECHAZADO")
-    .messages({
-      "string.empty": "El estado no puede estar vacío.",
-      "any.required": "El estado es obligatorio.",
-      "string.base": "El estado debe ser de tipo string.",
-      "any.only": "El estado debe ser 'available' o 'unavailable'.",
-    }), */
   location: Joi.string().required().messages({
     "string.empty": "La ubicación no puede estar vacía.",
     "any.required": "La ubicación es obligatoria.",
