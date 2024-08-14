@@ -58,14 +58,18 @@ async function createDonor(donor) {
       surnames,
       dni,
       dateOfBirth,
-      pdfpath,
     });
 
-    await newDonor.createTissue({ status: TissueStatus.QUARANTINE, ...tissue });
+    await newDonor.createTissue({
+      status: TissueStatus.QUARANTINE,
+      pdfpath,
+      ...tissue,
+    });
 
     return [newDonor.toJSON(), null];
   } catch (error) {
     handleError(error, "donor.service -> createDonor");
+    return [null, "Error al crear nuevo donador"];
   }
 }
 

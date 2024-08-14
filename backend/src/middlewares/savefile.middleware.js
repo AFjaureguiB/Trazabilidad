@@ -69,7 +69,7 @@ export const validateFile = async (req, res, next) => {
   }
 
   //Nos valemos del schema que creamos para facilmente ver si toda la informacion que requerimos viene en el objeto `req.body`.
-  //Solo necesitamos  `names`, `surnames` y `dni` pero si ya existe un esquema, lo usamos.
+  //Solo necesitamos `dni` del donador, y el `code` de un tissue pero si ya existe un esquema, lo usamos.
   const { error: bodyDonorError } = donorBodySchema.validate(donor);
 
   if (bodyDonorError) {
