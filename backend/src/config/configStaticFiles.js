@@ -1,6 +1,6 @@
 "use strict";
 
-import * as url from "url";
+import * as url from "node:url";
 import path from "node:path";
 import express from "express";
 
