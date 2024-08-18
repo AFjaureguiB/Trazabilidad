@@ -5,19 +5,14 @@ import { Donor, Tissue } from "../models/index.js";
 import { TissueStatus } from "../constants/TissueStatus.js";
 import { handleError } from "../utils/errorHandler.js";
 
+import { existTissueWithCode } from "../services/tissue.service.js";
+
 //helper functions para verificar la existencia de registrtos antes de realizar modificaciones cuando se sube un PDF
 export async function existDonorWithDni(dni) {
   const donorCount = await Donor.count({
     where: { dni },
   });
   return donorCount > 0;
-}
-
-export async function existTissueWithCode(code) {
-  const tissueCount = await Tissue.count({
-    where: { code },
-  });
-  return tissueCount > 0;
 }
 
 /**
@@ -47,11 +42,13 @@ async function getDonors() {
 async function createDonor(donor) {
   try {
     const { names, surnames, dni, dateOfBirth, pdfpath, tissue } = donor;
-    const donorFound = await Donor.findOne({
-      where: { dni },
-    });
 
-    if (donorFound) return [null, "El donador ya existe"];
+    const dniAlreadyExist = await existDonorWithDni(dni);
+    const codeAlreadyExist = await existTissueWithCode(tissue.code);
+
+    if (dniAlreadyExist) return [null, "El DNI, ya esta asociado a un donador"];
+    if (codeAlreadyExist)
+      return [null, "El codigo, ya esta asociado a un tejido"];
 
     const newDonor = await Donor.create({
       names,
@@ -60,13 +57,18 @@ async function createDonor(donor) {
       dateOfBirth,
     });
 
-    await newDonor.createTissue({
+    const newTissue = await newDonor.createTissue({
       status: TissueStatus.QUARANTINE,
       pdfpath,
       ...tissue,
     });
 
-    return [newDonor.toJSON(), null];
+    const newDonorWithTissue = {
+      ...newDonor.toJSON(),
+      Tissues: [newTissue.toJSON()],
+    };
+
+    return [newDonorWithTissue, null];
   } catch (error) {
     handleError(error, "donor.service -> createDonor");
     return [null, "Error al crear nuevo donador"];
@@ -76,7 +78,7 @@ async function createDonor(donor) {
 /**
  * Obtener a un donador mediante su id junto con su o sus piezas/tejidos
  * @param {number} id identificador de un donador en la base de datos
- * @returns {Array} Arreglo con dos elementos, en la posicion 1 es el donador, en la posicion 2 es el error
+ * @returns {Promise} Arreglo con dos elementos, en la posicion 1 es el donador, en la posicion 2 es el error
  */
 async function getDonorById(id) {
   try {

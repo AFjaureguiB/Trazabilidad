@@ -4,21 +4,21 @@ import { Router } from "express";
 
 //Importamos todas las funciones que definimos para el controlador del donador
 import DonorController from "../controllers/donor.controller.js";
+
 import {
-  upload,
-  validateFile,
-  renameFile,
-} from "../middlewares/savefile.middleware.js";
+  uploadAndValidateFile,
+  validateFields,
+} from "../middlewares/uploadfile.middleware.js";
 
 /** Instancia del enrutador */
 const router = Router();
 
 router.get("/", DonorController.getDonors); // /api/donors/
 
-router.post(
+router.use(
   "/",
-  [upload.single("consentimiento-pdf"), validateFile, renameFile],
-  DonorController.createDonor
+  uploadAndValidateFile,
+  validateFields,
+  DonorController.createDonorV2
 );
-
 export default router;
