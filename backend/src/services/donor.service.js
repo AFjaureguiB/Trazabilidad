@@ -39,16 +39,15 @@ async function getDonors() {
  * @param {Object} donor Objeto de un donador con la informacion de una pieza/tejido
  * @returns {Promise} Promesa con el nuevo objeto Donador creado
  */
-async function createDonor(donor) {
+async function createDonorWithTissue(donorWithTissue, extname) {
   try {
-    const { names, surnames, dni, dateOfBirth, pdfpath, tissue } = donor;
+    const { names, surnames, dni, dateOfBirth, tissue } = donorWithTissue;
 
     const dniAlreadyExist = await existDonorWithDni(dni);
     const codeAlreadyExist = await existTissueWithCode(tissue.code);
 
     if (dniAlreadyExist) return [null, "El DNI, ya esta asociado a un donador"];
-    if (codeAlreadyExist)
-      return [null, "El codigo, ya esta asociado a un tejido"];
+    if (codeAlreadyExist) return [null, "El codigo, ya esta asociado a un tejido"];
 
     const newDonor = await Donor.create({
       names,
@@ -56,6 +55,8 @@ async function createDonor(donor) {
       dni,
       dateOfBirth,
     });
+
+    const pdfpath = `${newDonor.dni}-${tissue.code}${extname}`;
 
     const newTissue = await newDonor.createTissue({
       status: TissueStatus.QUARANTINE,
@@ -65,13 +66,38 @@ async function createDonor(donor) {
 
     const newDonorWithTissue = {
       ...newDonor.toJSON(),
-      Tissues: [newTissue.toJSON()],
+      tissue: newTissue.toJSON(),
     };
 
     return [newDonorWithTissue, null];
   } catch (error) {
     handleError(error, "donor.service -> createDonor");
     return [null, "Error al crear nuevo donador"];
+  }
+}
+
+async function addTissueToDonor(donorId, tissue, extname) {
+  try {
+    const donorFound = await Donor.findByPk(donorId);
+    if (!donorFound) return [null, "El donador no existe"];
+
+    //No necesariamente en este donador se repite el codigo, asi que verifico si el codigo no existe en algun otro tejido.
+    const codeAlreadyExist = await existTissueWithCode(tissue.code);
+    if (codeAlreadyExist)
+      return [null, "El codigo, ya esta asociado a un tejido"];
+
+    const pdfpath = `${donorFound.dni}-${tissue.code}${extname}`;
+
+    const newTissue = await donorFound.createTissue({
+      status: TissueStatus.QUARANTINE,
+      pdfpath,
+      ...tissue,
+    });
+
+    return [newTissue.toJSON(), null];
+  } catch (error) {
+    handleError(error, "donor.service -> addTissueToDonor");
+    return [null, "Error al crear nuevo tejido"];
   }
 }
 
@@ -147,7 +173,8 @@ async function deleteDonor(id) {
 
 export default {
   getDonors,
-  createDonor,
+  createDonorWithTissue,
+  addTissueToDonor,
   getDonorById,
   deleteDonor,
   updateDonor,

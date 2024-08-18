@@ -5,6 +5,7 @@ import { respondSuccess, respondError } from "../utils/resHandler.js";
 import { handleError } from "../utils/errorHandler.js";
 import DonorService from "../services/donor.service.js";
 import { donorBodySchema } from "../scheme/donor.schema.js";
+import { tissueSchema } from "../scheme/tissue.schema.js";
 import { savefile } from "../services/savefile.service.js";
 
 /**
@@ -28,10 +29,13 @@ async function getDonors(req, res) {
 
 //En esta V2 de createDonor, manejamos otros middlewares, y gestionamos en memoria el archivo PDF enviado en el form
 //De esta manera evitamos escribir directamente en el disco y despues borrar o renombrar el archivo.
-async function createDonorV2(req, res) {
+async function createDonorWithTissue(req, res) {
   try {
     const { body: donorWithTissue, file } = req;
 
+    if (!file)
+      return respondError(req, res, 400, "Debes proveer toda la informacion necesaria", "El archivo de consentimiento es obligatorio");
+    
     //Aqui colocariamos todo lo que corresponde al servicio de crear un donador con su tejido
     //volvemos a verificar con el esquema, aunque en teoria nunca deberia de llegar aqui con un error, pero por si las moscas
     const { error: bodyDonorError } = donorBodySchema.validate(donorWithTissue);
@@ -42,17 +46,15 @@ async function createDonorV2(req, res) {
     //Para poder guardar el archivo, necesito el nombre del archivo y eso lo puedo generar aqui con el obj req.file
     //Ese dato, curiosamente lo necesita el servicio para crear un donador, asi que creo aqui con mas razon
     const extension = extname(req.file.originalname);
-    const customFileName = `${donorWithTissue.dni}-${donorWithTissue.tissue.code}${extension}`;
 
     //code to insert a donor with tissue in to DB ...
-    const [newDonor, donorError] = await DonorService.createDonor({
-      pdfpath: customFileName,
-      ...donorWithTissue,
-    });
+    const [newDonorWithTissue, newDonorError] = await DonorService.createDonorWithTissue(donorWithTissue, extension);
 
     //Si ocurrio algo en la creacion del donador, respondemos y no guardamos el archivo
-    if (donorError) return respondError(req, res, 400, donorError);
-    if (!newDonor) return respondError(req, res, 400, "No se creo el donador");
+    if (newDonorError) return respondError(req, res, 400, newDonorError);
+    if (!newDonorWithTissue) return respondError(req, res, 400, "No se creo el donador");
+
+    const customFileName = `${newDonorWithTissue.dni}-${newDonorWithTissue.tissue.code}${extension}`;
 
     //Si se inserto correctamente, ahora si, guardamos el archivo en el disco, en la carpeta public/consentimiento-informado
     const [saveSuccess, saveError] = await savefile(
@@ -61,47 +63,56 @@ async function createDonorV2(req, res) {
     );
 
     if (saveError) {
-     //This code snippet is ugly, maybe we should update it C:
-      newDonor.Tissues[0].pdfpath =
-        "Archivo no creado correctamente, actualizar mas tarde";
-      return respondSuccess(req, res, 201, newDonor);
+      //This code snippet is ugly, maybe we should update it C:
+      newDonor.tissue.pdfpath = "Archivo no creado correctamente, actualizar mas tarde";
+      return respondSuccess(req, res, 201, newDonorWithTissue);
     }
     //Si todo sale bien, respondemos con 201, y previamente ya habremos guardado el PDF en el disco
-    respondSuccess(req, res, 201, newDonor);
+    respondSuccess(req, res, 201, newDonorWithTissue);
   } catch (error) {
     handleError(error, "donor.controller -> createDonorV2");
     respondError(req, res, 400, error.message);
   }
 }
 
-async function createDonor(req, res) {
+async function addTissueToDonor(req, res) {
   try {
-    const { body: donor, file } = req;
+    const { body: tissue, file } = req;
+    const { donorId } = req.params;
 
-    //volvemos a verificar con el esquema, aunque en teoria nunca deberia de llegar aqui con un error, pero por si las moscas
-    const { error: bodyDonorError } = donorBodySchema.validate(donor);
+    if (!file)
+      return respondError(req, res, 400, "Debes proveer toda la informacion necesaria", "El archivo de consentimiento es obligatorio");
 
-    if (bodyDonorError)
-      return respondError(req, res, 400, bodyDonorError.message);
+    const { error: tissueError } = tissueSchema.validate(tissue);
+    if (tissueError)
+      return respondError(req, res, 400, "Debes proveer toda la informacion necesaria", tissueError.message);
 
-    const [newDonor, donorError] = await DonorService.createDonor({
-      pdfpath: file.filename,
-      ...donor,
-    });
+    const extension = extname(req.file.originalname);
+    const [newTissue, newTissueError] = await DonorService.addTissueToDonor(donorId, tissue, extension);
 
-    if (donorError) return respondError(req, res, 400, donorError);
+    if (newTissueError) return respondError(req, res, 400, newTissueError);
+    if (!newTissue) return respondError(req, res, 400, "No se creo el donador");
 
-    if (!newDonor) return respondError(req, res, 400, "No se creo el donador");
+    //Si se inserto correctamente, ahora si, guardamos el archivo en el disco, en la carpeta public/consentimiento-informado
+    const [saveSuccess, saveError] = await savefile(newTissue.pdfpath, file.buffer);
+    
+    if (saveError) {
+      //This code snippet is ugly, maybe we should update it C:
+      newTissue.pdfpath = "Archivo no creado correctamente, actualizar mas tarde";
+      return respondSuccess(req, res, 201, newDonor);
+    }
 
-    respondSuccess(req, res, 201, newDonor);
+    //Si todo sale bien, respondemos con 201, y previamente ya habremos guardado el PDF en el disco
+    respondSuccess(req, res, 201, newTissue);
+
   } catch (error) {
-    handleError(error, "donor.controller -> createDonor");
+    handleError(error, "donor.controller -> addTissueToDonor");
     respondError(req, res, 400, error.message);
   }
 }
 
 export default {
   getDonors,
-  createDonor,
-  createDonorV2,
+  createDonorWithTissue,
+  addTissueToDonor,
 };
