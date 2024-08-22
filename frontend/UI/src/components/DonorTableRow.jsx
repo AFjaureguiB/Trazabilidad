@@ -10,8 +10,16 @@ import User from "./icons/User";
 import Plus from "./icons/Plus.jsx";
 import Chevron from "./icons/Chevron.jsx";
 
-export default function DonorTableRow({ donor, user }) {
+export default function DonorTableRow({ donor, user, setAddTissueData }) {
   const [expanded, setExpanded] = useState(false);
+
+  const handleAddTissue = (donorId, donorNames, donorSurNames) => {
+    setAddTissueData({
+      showAddTissueModal: true,
+      donorId,
+      donorFullName: `${donorNames} ${donorSurNames}`,
+    });
+  };
 
   return (
     <>
@@ -54,6 +62,9 @@ export default function DonorTableRow({ donor, user }) {
             <button
               className="font-medium text-blue-600 flex gap-1 hover:underline"
               title="Editar informacion de donador"
+              onClick={() =>
+                handleAddTissue(donor.id, donor.names, donor.surnames)
+              }
             >
               <Plus className={"size-5"} />
               <span>Agregar tejido</span>
