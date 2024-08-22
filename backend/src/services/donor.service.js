@@ -47,7 +47,8 @@ async function createDonorWithTissue(donorWithTissue, extname) {
     const codeAlreadyExist = await existTissueWithCode(tissue.code);
 
     if (dniAlreadyExist) return [null, "El DNI, ya esta asociado a un donador"];
-    if (codeAlreadyExist) return [null, "El codigo, ya esta asociado a un tejido"];
+    if (codeAlreadyExist)
+      return [null, "El codigo, ya esta asociado a un tejido"];
 
     const newDonor = await Donor.create({
       names,
@@ -121,7 +122,19 @@ async function getDonorById(id) {
     handleError(error, "donor.service -> getDonorById");
   }
 }
+async function updateDonor(id, donorData) {
+  try {
+    const donorFound = await Donor.findByPk(id);
+    if (!donorFound) return [null, "El donador no existe"];
 
+    donorFound.update(donorData);
+    donorFound.reload();
+
+    return [donorFound.toJSON(), null];
+  } catch (error) {
+    handleError(error, "donor.service -> updateDonor");
+  }
+}
 /**
  * Actualizar a un donador mediante su id junto con su o sus piezas/tejidos
  * @param {number} id identificador de un donador en la base de datos
@@ -129,7 +142,7 @@ async function getDonorById(id) {
  * @param {number} tissueId identificador de una pieza/tejido de un donador en la base de datos
  * @returns {Array} Arreglo con dos elementos, en la posicion 1 es el donador con la informacion actualizada, en la posicion 2 si lo hay es el error
  */
-async function updateDonor(id, donor, tissueId) {
+async function updateDonorAndTissue(id, donor, tissueId) {
   try {
     const { tissue, ...donorData } = donor;
 
