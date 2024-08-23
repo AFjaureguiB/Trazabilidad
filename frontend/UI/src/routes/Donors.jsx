@@ -8,6 +8,7 @@ import Plus from "../components/icons/Plus.jsx";
 import { userRoles } from "../constants/user.roles.js";
 import CreateDonorForm from "../components/CreateDonorForm.jsx";
 import CreateTissueForm from "../components/CreateTissueForm.jsx";
+import EditDonorForm from "../components/EditDonorForm.jsx";
 
 export default function AdminUsers() {
   const [donors, setDonors] = useState([]);
@@ -18,6 +19,11 @@ export default function AdminUsers() {
     showAddTissueModal: false,
     donorId: 0,
     donorFullName: "",
+  });
+
+  const [editDonorData, setEditDonorData] = useState({
+    showEditDonorModal: false,
+    donor: {},
   });
 
   const { user } = useAuth();
@@ -85,6 +91,7 @@ export default function AdminUsers() {
                     key={donor.id}
                     user={user}
                     setAddTissueData={setAddTissueData}
+                    setEditDonorData={setEditDonorData}
                   />
                 ))}
               </tbody>
@@ -93,17 +100,29 @@ export default function AdminUsers() {
         </div>
       </div>
 
-      <CreateDonorForm
-        showCreateDonorModal={showCreateDonorModal}
-        setShowCreateDonorModal={setShowCreateDonorModal}
-        fetchDonors={fetchDonors}
-      />
+      {user.role === userRoles.ASSISTANT ? (
+        <CreateDonorForm
+          showCreateDonorModal={showCreateDonorModal}
+          setShowCreateDonorModal={setShowCreateDonorModal}
+          fetchDonors={fetchDonors}
+        />
+      ) : null}
 
-      <CreateTissueForm
-        addTissueData={addTissueData}
-        setAddTissueData={setAddTissueData}
-        fetchDonors={fetchDonors}
-      />
+      {user.role === userRoles.ASSISTANT ? (
+        <CreateTissueForm
+          addTissueData={addTissueData}
+          setAddTissueData={setAddTissueData}
+          fetchDonors={fetchDonors}
+        />
+      ) : null}
+
+      {user.role === userRoles.ADMIN ? (
+        <EditDonorForm
+          editDonorData={editDonorData}
+          setEditDonorData={setEditDonorData}
+          fetchDonors={fetchDonors}
+        />
+      ) : null}
     </>
   );
 }

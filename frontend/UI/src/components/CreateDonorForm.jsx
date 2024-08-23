@@ -61,14 +61,8 @@ export default function CreateDonorModal({
         details: detailsError,
         message: messageError,
       } = await createDonorWithTissue(formData);
-
-      console.log(state);
-      console.log(data);
-      console.log(detailsError);
-      console.log(messageError);
+  
       if (state === "Error") {
-        //response.errorDetails || response.errorMessage; en teoria, no se da el caso en el que response.errorDetails sea distinto de `{}`, porque asi esta en el backend xd
-        console.log("Ahora si cae en el error?");
         notifyError(messageError);
       }
 

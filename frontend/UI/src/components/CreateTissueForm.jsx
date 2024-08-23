@@ -42,16 +42,19 @@ export default function CreateTissue({
       // Añadir el archivo PDF
       formData.append("consentimiento-pdf", data.consentimiento[0]); // Acceder al archivo subido
 
-      const response = await addTissueToDonor(donorId, formData);
+      const {
+        state,
+        data,
+        details: detailsError,
+        message: messageError,
+      } = await addTissueToDonor(donorId, formData);
 
-      //response.errorDetails || response.errorMessage; en teoria, no se da el caso en el que response.errorDetails sea distinto de `{}`, porque asi esta en el backend xd
-      const errorMessage = response.errorMessage;
-      console.log(errorMessage);
-      const newTissueMessage = `Registro de tejido '${response.tissuetype}' con estado '${response.status}', para el donador '${donorFullName}' realizado con exito`;
+      if (state === "Error") {
+        notifyError(messageError);
+      }
 
-      if (errorMessage) {
-        notifyError(errorMessage);
-      } else {
+      if (state == "Success") {
+        const newTissueMessage = `Registro de tejido '${data.tissuetype}' con estado '${data.status}', para el donador '${donorFullName}' realizado con exito`;
         notifySuccess(newTissueMessage);
         handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
         fetchDonors(); //Hacemos un fetching de los donadores para ver el nuevo tejido en el donador

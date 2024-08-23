@@ -59,12 +59,32 @@ export const addTissueToDonor = async (donorId, tissueData) => {
 
     const { status, data } = response;
 
-    if (status === 201) return data.data;
+    if (status === 201) return data;
   } catch (error) {
     console.log(error);
-    return {
-      errorMessage: error.response.data.message,
-      errorDetails: error.response.data.details,
-    };
+    return error.response.data;
+  }
+};
+
+export const updateDonor = async (donor) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const { id, ...donorData } = donor;
+
+    const URL = `/donors/${id}`;
+
+    const response = await axios.put(URL, donorData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
   }
 };

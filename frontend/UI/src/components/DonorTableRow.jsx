@@ -10,7 +10,12 @@ import User from "./icons/User";
 import Plus from "./icons/Plus.jsx";
 import Chevron from "./icons/Chevron.jsx";
 
-export default function DonorTableRow({ donor, user, setAddTissueData }) {
+export default function DonorTableRow({
+  donor,
+  user,
+  setAddTissueData,
+  setEditDonorData,
+}) {
   const [expanded, setExpanded] = useState(false);
 
   const handleAddTissue = (donorId, donorNames, donorSurNames) => {
@@ -18,6 +23,14 @@ export default function DonorTableRow({ donor, user, setAddTissueData }) {
       showAddTissueModal: true,
       donorId,
       donorFullName: `${donorNames} ${donorSurNames}`,
+    });
+  };
+
+  const handleEditDonorData = (donor) => {
+    const { Tissues, ...donorData } = donor;
+    setEditDonorData({
+      showEditDonorModal: true,
+      donor: donorData,
     });
   };
 
@@ -54,6 +67,7 @@ export default function DonorTableRow({ donor, user, setAddTissueData }) {
             <button
               className="font-medium text-blue-600 flex gap-1 hover:underline"
               title="Editar informacion de donador"
+              onClick={() => handleEditDonorData(donor)}
             >
               <Pencil />
               <span>Editar donador</span>
@@ -87,13 +101,13 @@ export default function DonorTableRow({ donor, user, setAddTissueData }) {
                       <PuzzlePiece />
                       <div className="space-y-1">
                         <p className="text-lg font-bold">{tissue.tissuetype}</p>
-                        <p className="space-x-1">
+                        <p className="space-x-1 text-gray-500">
                           <span>Codigo: </span>
                           <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
                             {tissue.code}
                           </span>
                         </p>
-                        <p className="space-x-1">
+                        <p className="space-x-1 text-gray-500">
                           <span>Nevera:</span>
                           <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
                             {tissue.location}
@@ -103,9 +117,23 @@ export default function DonorTableRow({ donor, user, setAddTissueData }) {
                     </div>
 
                     <div className="space-y-1 text-right">
-                      <p>{tissue.ips}</p>
-                      <p>{tissue.specialistname}</p>
-                      <p>{tissue.collectedAt}</p>
+                      <p className="text-gray-500 space-x-1">
+                        <span>IPS: </span>
+                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded whitespace-nowrap">
+                          {tissue.ips}
+                        </span>
+                      </p>
+                      <p className="text-gray-500 space-x-1">
+                        <span>Recolecion: </span>
+                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded whitespace-nowrap">
+                          {tissue.collectedAt}
+                        </span>
+                      </p>
+                      <p>
+                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded whitespace-nowrap">
+                          {tissue.specialistname}
+                        </span>
+                      </p>
                     </div>
 
                     <div>
@@ -120,10 +148,10 @@ export default function DonorTableRow({ donor, user, setAddTissueData }) {
                     </div>
 
                     <div>
-                      <p className="truncate">
+                      <p className="text-pretty text-gray-500">
                         {tissue.description
                           ? tissue.description
-                          : "Sin descripcion adicional"}
+                          : "Sin descripcion adicional ..."}
                       </p>
                     </div>
                     <div className="flex justify-center">
