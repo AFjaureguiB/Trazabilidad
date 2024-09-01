@@ -1,5 +1,5 @@
 import { isPdf, isSingleFile } from "../utils/pdfValidations.js";
-export default function TissueForm({ register, errors }) {
+export default function TissueForm({ register, errors, isEditing }) {
   return (
     <fieldset className="border border-slate-700 p-5 text-gray-100 rounded-lg space-y-4">
       <legend>Tejido</legend>
@@ -210,7 +210,9 @@ export default function TissueForm({ register, errors }) {
                         : "focus:ring-slate-500"
                     }`}
             {...register("consentimiento", {
-              required: "El archivo PDF del consentimiento es obligatorio",
+              required: isEditing
+                ? false
+                : "El archivo PDF del consentimiento es obligatorio",
               validate: {
                 isPdf,
                 isSingleFile,

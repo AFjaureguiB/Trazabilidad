@@ -18,11 +18,13 @@ export default function DonorTableRow({
 }) {
   const [expanded, setExpanded] = useState(false);
 
-  const handleAddTissue = (donorId, donorNames, donorSurNames) => {
+  //We will use this function to edit or add new tissue
+  const handleAddTissue = (donorId, donorNames, donorSurNames, tissue) => {
     setAddTissueData({
       showAddTissueModal: true,
       donorId,
       donorFullName: `${donorNames} ${donorSurNames}`,
+      tissue: tissue,
     });
   };
 
@@ -75,7 +77,7 @@ export default function DonorTableRow({
           ) : user.role === userRoles.ASSISTANT ? (
             <button
               className="font-medium text-blue-600 flex gap-1 hover:underline"
-              title="Editar informacion de donador"
+              title="Agregar informacion de tejido a un donador"
               onClick={() =>
                 handleAddTissue(donor.id, donor.names, donor.surnames)
               }
@@ -165,6 +167,14 @@ export default function DonorTableRow({
                           <button
                             className="font-medium text-blue-600 flex gap-1 hover:underline"
                             title="Editar informacion del tejido"
+                            onClick={() =>
+                              handleAddTissue(
+                                donor.id,
+                                donor.names,
+                                donor.surnames,
+                                tissue
+                              )
+                            }
                           >
                             <Pencil />
                             <span>Editar tejido</span>

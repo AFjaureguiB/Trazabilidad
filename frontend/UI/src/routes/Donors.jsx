@@ -15,10 +15,12 @@ export default function AdminUsers() {
 
   const [showCreateDonorModal, setShowCreateDonorModal] = useState(false);
 
+  //We will use this state to edit or add new tissue
   const [addTissueData, setAddTissueData] = useState({
     showAddTissueModal: false,
     donorId: 0,
     donorFullName: "",
+    tissue: undefined, //we use undefined value because the value litera `{}` is truty in js
   });
 
   const [editDonorData, setEditDonorData] = useState({
@@ -108,13 +110,11 @@ export default function AdminUsers() {
         />
       ) : null}
 
-      {user.role === userRoles.ASSISTANT ? (
-        <CreateTissueForm
-          addTissueData={addTissueData}
-          setAddTissueData={setAddTissueData}
-          fetchDonors={fetchDonors}
-        />
-      ) : null}
+      <CreateTissueForm
+        addTissueData={addTissueData}
+        setAddTissueData={setAddTissueData}
+        fetchDonors={fetchDonors}
+      />
 
       {user.role === userRoles.ADMIN ? (
         <EditDonorForm
