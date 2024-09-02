@@ -1,10 +1,12 @@
 "use strict";
+import path from "node:path";
+import * as url from "node:url";
 
 // Importa el archivo 'configEnv.js' para cargar las variables de entorno
 import { SERVER_PORT, SERVER_HOST } from "./config/configEnv.js";
 
 //Importa el archivo configStaticFiles.js para cargar la funcion que configura el server para archivos estaticos
-import  setupStaticFiles  from "./config/configStaticFiles.js";
+import setupStaticFiles from "./config/configStaticFiles.js";
 
 // Importa el módulo 'cors' para agregar los cors
 import cors from "cors";
@@ -32,6 +34,10 @@ import { handleFatalError, handleError } from "./utils/errorHandler.js";
  */
 async function setupServer() {
   try {
+    // Obtén __dirname en un entorno ESM
+    const __filename = url.fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
+
     /** Instancia de la aplicacion */
     const server = express();
     server.disable("x-powered-by");
@@ -55,6 +61,11 @@ async function setupServer() {
     // Agrega el enrutador principal al servidor
     // Agrega el enrutador principal al servidor
     server.use("/api", indexRoutes);
+
+    // Catch-all para redirigir todas las rutas no gestionadas a index.html de React, de esa manera, es react-dom que gestiona las rutas
+    server.get("*", (req, res) => {
+      res.sendFile(path.join(__dirname,"../public/dist/index.html"));
+    });
 
     // Inicia el servidor en el puerto especificado
     server.listen(SERVER_PORT, () => {
