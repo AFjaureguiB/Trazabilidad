@@ -1,6 +1,6 @@
 "use strict";
 import { extname } from "node:path";
-
+import { logUserActivity } from "../services/logger.service.js";
 import { respondSuccess, respondError } from "../utils/resHandler.js";
 import { handleError } from "../utils/errorHandler.js";
 import TissueService from "../services/tissue.service.js";
@@ -18,10 +18,10 @@ async function updateTissue(req, res) {
      * Una cosa importante, es que si no se adjunta un archivo PDF, el field `consentimiento-pdf` tendra un valor undefined o null o algo asi
      * EL middleware de multer, de alguna manera detecta que no hay ningun archivo, por lo tanto deja ese field asi tal cual, y no lo quita
      * Este comportamiento resulta, en que si no se adjunta nada, el `tissueBody` tiene el field `consentimiento-pdf` y por ende no pasara la validacion
-     * 
+     *
      * Cuando si se adjunta un archivo, este field se quita del body de la request y la info se pasa al field `file`
-     * 
-     * La solucion en el front, es que si no hay archivo cargado, no se debe agregar este campo al formData. 
+     *
+     * La solucion en el front, es que si no hay archivo cargado, no se debe agregar este campo al formData.
      */
 
     const { params, body: tissueBody, file } = req;
@@ -76,6 +76,13 @@ async function updateTissue(req, res) {
     }
 
     respondSuccess(req, res, 200, updatedTissue);
+    logUserActivity(
+      req.username,
+      req.role,
+      req.process,
+      "PUT /api/tissues",
+      updatedTissue
+    );
   } catch (error) {
     handleError(error, "tissue.controller -> createTissueToDonor");
     respondError(req, res, 400, error.message);

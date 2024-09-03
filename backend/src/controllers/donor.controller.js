@@ -1,6 +1,8 @@
 "use strict";
 import { extname } from "node:path";
 
+import { logUserActivity } from "../services/logger.service.js";
+
 import { respondSuccess, respondError } from "../utils/resHandler.js";
 import { handleError } from "../utils/errorHandler.js";
 import DonorService from "../services/donor.service.js";
@@ -132,7 +134,7 @@ async function addTissueToDonor(req, res) {
       //This code snippet is ugly, maybe we should update it C:
       newTissue.pdfpath =
         "Archivo no creado correctamente, actualizar mas tarde";
-      return respondSuccess(req, res, 201, newDonor);
+      return respondSuccess(req, res, 201, newTissue); //Aqui tenemos un error, newDonor de donde salio?
     }
 
     //Si todo sale bien, respondemos con 201, y previamente ya habremos guardado el PDF en el disco
@@ -161,6 +163,13 @@ async function updateDonor(req, res) {
     if (donorError) return respondError(req, res, 400, donorError);
 
     respondSuccess(req, res, 200, donor);
+    logUserActivity(
+      req.username,
+      req.role,
+      req.process,
+      "PUT /api/donors",
+      donor
+    );
   } catch (error) {
     handleError(error, "donor.controller -> updateDonor");
     respondError(req, res, 400, error.message);
