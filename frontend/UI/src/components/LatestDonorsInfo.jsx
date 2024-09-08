@@ -3,10 +3,8 @@ import { getDonors } from "../services/donors.service";
 import { getAgeFromDate } from "../utils/getAgeFromDate";
 
 export default function LatestDonorsInfo() {
-  //Esto se movera a otro sitio, ya que no siempre el adminlayout sera de un admin que sea de donantes y tejidos
   const [donors, setDonors] = useState([]);
 
-  //Esto se movera a otro sitio, ya que no siempre el adminlayout sera de un admin que sea de donantes y tejidos
   const fetchDonors = async () => {
     const donors = await getDonors();
     setDonors(donors);
