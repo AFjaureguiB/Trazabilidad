@@ -14,6 +14,9 @@ function App() {
   if (user.processId === userProcesses.DONANTES_TEJIDOS)
     return <Navigate to="/donors" />;
 
+  if (user.processId === userProcesses.PRUEBAS_INFECCIOSAS)
+    return <Navigate to="/infectious-tests" />;
+
   return <p>Pagina principal para un usuario normal</p>;
 }
 
