@@ -11,10 +11,16 @@ const logger = winston.createLogger({
   transports: [new winston.transports.File({ filename: "user-activity.log" })],
 });
 
-export const logUserActivity = (username, role, process, action, details) => {
+export const logUserActivity = (
+  username,
+  role,
+  process,
+  action,
+  updatedData
+) => {
   logger.info(
-    `User: ${username} Role: ${role} Process: ${process} - Action: ${action} - Details: ${JSON.stringify(
-      details
+    `User: ${username} | Role: ${role} | Process: ${process} | Action: ${action} | Updated Data: ${JSON.stringify(
+      updatedData
     )}`
   );
 };
