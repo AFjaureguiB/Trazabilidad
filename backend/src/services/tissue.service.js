@@ -2,6 +2,7 @@
 
 import { Donor, Tissue } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
+import compareAndLogChanges from "../utils/compareChanges.js";
 
 export async function existTissueWithCode(code) {
   const tissueCount = await Tissue.count({
@@ -15,27 +16,42 @@ export async function updateTissue(id, tissueData, extname) {
     const tissueFound = await Tissue.findByPk(id);
     if (!tissueFound) return [null, "El tejido no existe"];
 
-    //No es necesario validar si el Donor existe, ya que un Tissue esta estrictamente ligado a un donador
     const donorFound = await Donor.findByPk(tissueFound.donorId);
 
     const pdfpath = extname
       ? `${donorFound.dni}-${tissueData.code}${extname}`
-      : "";
+      : tissueFound.pdfpath;
 
-    //Si viene extname (extension del archivo, la cual es PDF) quiere decir que tengo que actualziar el nombre del archivo en la DB porque se adjunto un archivo PDF
+    const updateData = {
+      ...tissueData,
+      collectedAt: new Date(tissueData.collectedAt),
+      updatedAt: new Date(),
+      pdfpath: pdfpath || tissueFound.pdfpath,
+    };
+
+    const previousTissue = tissueFound.toJSON();
+
     if (pdfpath) {
-      tissueFound.update({ pdfpath, ...tissueData });
-      //En otro caso, se quedara sin cambios, ya que no se adjunto ningun archivo PDF
+      await tissueFound.update(updateData);
     } else {
-      tissueFound.update(tissueData);
+      await tissueFound.update({
+        ...tissueData,
+        collectedAt: new Date(tissueData.collectedAt),
+        updatedAt: new Date(),
+      });
     }
 
-    //Si se actualizo el pdfpath, ya viene en la nueva informacion al hacer reload
-    tissueFound.reload();
+    await tissueFound.reload();
 
-    return [tissueFound.toJSON(), null];
+    const newTissue = tissueFound.toJSON();
+
+    const updatedNewInfo = compareAndLogChanges(previousTissue, newTissue);
+
+    return [newTissue, null, updatedNewInfo];
   } catch (error) {
     handleError(error, "tissue.service -> updateTissue");
+
+    return [null, "Error al actualizar el tejido"];
   }
 }
 
