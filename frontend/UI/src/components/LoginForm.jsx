@@ -27,10 +27,20 @@ function LoginForm() {
   };
 
   return (
-    <div className="h-[calc(100vh-64px)] flex items-center justify-center">
-      <div className="flex flex-col md:flex-row items-center justify-between w-9/10 gap-16">
+    <div className="relative h-screen flex items-center justify-center">
+      {/* Imagen de fondo con blur */}
+      <div
+        className="absolute inset-0 bg-cover bg-center blur-[4px] z-0"
+        style={{ backgroundImage: `url('/background.jpg')` }}
+      ></div>
+
+      {/* Overlay oscuro sobre la imagen de fondo */}
+      <div className="absolute inset-0 bg-black/55 z-0"></div>
+
+      {/* Contenido principal */}
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-9/10 gap-16 ">
         <img src="/logoFHD.png" className="w-1/2 h-auto object-contain mr-1" />
-        <div className="p-14 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2 bg-gray-200/80">
+        <div className="p-14 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2 bg-slate-200/90 shadow-2xl">
           {feedBack && (
             <div
               className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 w-full"
@@ -43,6 +53,7 @@ function LoginForm() {
             onSubmit={handleSubmit(onSubmit)}
             className="w-full flex flex-col space-y-4"
           >
+            {/* Campos de entrada */}
             <div>
               <label
                 htmlFor="username"
@@ -84,6 +95,20 @@ function LoginForm() {
           </form>
         </div>
       </div>
+
+      {/* Footer en la esquina inferior izquierda */}
+      <footer className="absolute bottom-0 left-0 z-10 bg-transparent">
+        <p className="text-left">
+          <a
+            href="https://www.fundonemos.org" // Cambia esto por la URL que desees
+            className="text-white hover:underline"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            &copy; 2024 Fundonemos. Todos los derechos reservados.
+          </a>
+        </p>
+      </footer>
     </div>
   );
 }
