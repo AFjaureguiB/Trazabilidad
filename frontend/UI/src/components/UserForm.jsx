@@ -8,8 +8,8 @@ export default function UserForm({
 }) {
   return (
     <div className="p-4 md:p-8 col-span-2 md:col-span-1 border rounded-xl shadow">
-      <h2 className="text-4xl font-extrabold text-gray-900 mb-6 max-w-sm mx-auto">
-        Informacion de usuario
+      <h2 className="text-3xl font-extrabold text-gray-800 mb-6 max-w-sm mx-auto">
+        {isBeingEdited ? "Actualizar usuario" : "Registrar usuario"}
       </h2>
       <form
         className="space-y-4 max-w-sm mx-auto"

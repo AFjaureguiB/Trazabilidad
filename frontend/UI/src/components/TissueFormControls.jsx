@@ -62,7 +62,7 @@ export default function TissueForm({ register, errors, isEditing }) {
             htmlFor="code"
             className="block mb-2 text-sm font-medium text-gray-100 "
           >
-            Código FUNDONEMOS
+            Código único donante
           </label>
           <input
             type="text"
@@ -123,8 +123,7 @@ export default function TissueForm({ register, errors, isEditing }) {
           >
             Tipo
           </label>
-          <input
-            type="text"
+          <select
             name="tissuetype"
             id="tissuetype"
             className={`bg-neutral-700 text-neutral-400 text-sm rounded-lg focus:outline-none focus:ring-4 block w-full p-2.5 ${
@@ -135,13 +134,20 @@ export default function TissueForm({ register, errors, isEditing }) {
             {...register("tissuetype", {
               required: "El tipo del tejido es obligatorio",
             })}
-          />
+          >
+            <option value="" disabled>Selecciona el tipo</option>
+            <option value="Cabeza femoral derecha">Cabeza femoral derecha</option>
+            <option value="Cabeza femoral izquierda">Cabeza femoral izquierda</option>
+            <option value="Fragmento de rodilla derecha">Fragmento de rodilla derecha</option>
+            <option value="Fragmento de rodilla izquierda">Fragmento de rodilla izquierda</option>
+          </select>
           {errors.tissuetype && (
             <p className="text-red-400 text-sm mt-2">
               {errors.tissuetype.message}
             </p>
           )}
         </div>
+
         <div>
           <label
             htmlFor="description"
