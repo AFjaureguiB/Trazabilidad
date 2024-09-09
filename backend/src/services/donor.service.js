@@ -7,6 +7,8 @@ import { handleError } from "../utils/errorHandler.js";
 
 import { existTissueWithCode } from "../services/tissue.service.js";
 
+import compareAndLogChanges from "../utils/compareChanges.js";
+
 //helper functions para verificar la existencia de registrtos antes de realizar modificaciones cuando se sube un PDF
 export async function existDonorWithDni(dni) {
   const donorCount = await Donor.count({
@@ -122,19 +124,28 @@ async function getDonorById(id) {
     handleError(error, "donor.service -> getDonorById");
   }
 }
+
 async function updateDonor(id, donorData) {
   try {
     const donorFound = await Donor.findByPk(id);
-    if (!donorFound) return [null, "El donador no existe"];
 
-    donorFound.update(donorData);
-    donorFound.reload();
+    if (!donorFound) return [null, "El donador no existe", null];
 
-    return [donorFound.toJSON(), null];
+    const previusDonor = donorFound.toJSON();
+
+    await donorFound.update(donorData);
+    await donorFound.reload();
+    const newDonor = donorFound.toJSON();
+
+    // Usa la función compareAndLogChanges para comparar los cambios
+    const updatedInfo = compareAndLogChanges(previusDonor, newDonor);
+
+    return [newDonor, null, updatedInfo];
   } catch (error) {
     handleError(error, "donor.service -> updateDonor");
   }
 }
+
 /**
  * Actualizar a un donador mediante su id junto con su o sus piezas/tejidos
  * @param {number} id identificador de un donador en la base de datos

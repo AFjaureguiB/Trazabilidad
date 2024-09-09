@@ -155,26 +155,28 @@ async function updateDonor(req, res) {
     if (donorDataError)
       return respondError(req, res, 400, donorDataError.message);
 
-    const [donor, donorError] = await DonorService.updateDonor(
-      params.id,
-      donorData
-    );
+    // Asegúrate de que el servicio devuelve updatedInfo correctamente
+    const [updatedDonor, donorError, updatedInfo] = await DonorService.updateDonor(params.id, donorData);
 
     if (donorError) return respondError(req, res, 400, donorError);
 
-    respondSuccess(req, res, 200, donor);
+    // Pasa updatedDonor a la respuesta de éxito
+    respondSuccess(req, res, 200, updatedDonor);
+
+    // Log de la actividad del usuario con updatedInfo
     logUserActivity(
       req.username,
       req.role,
       req.process,
       "PUT /api/donors",
-      donor
+      updatedInfo // Aquí pasa updatedInfo
     );
   } catch (error) {
     handleError(error, "donor.controller -> updateDonor");
     respondError(req, res, 400, error.message);
   }
 }
+
 
 export default {
   getDonors,
