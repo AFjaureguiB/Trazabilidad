@@ -67,7 +67,7 @@ export default function CreateDonorModal({
       }
 
       if (state == "Success") {
-        const newDonorMessage = `Registro de donador '${data.names} ${data.surnames}' y su tejido '${data.tissue.tissuetype}' realizado con exito`;
+        const newDonorMessage = `Registro de donante '${data.names} ${data.surnames}' y su tejido '${data.tissue.tissuetype}' realizado con exito`;
         notifySuccess(newDonorMessage);
         handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
         fetchDonors(); //Hacemos un fetching de los donadores para ver el nuevo tejido en el donador

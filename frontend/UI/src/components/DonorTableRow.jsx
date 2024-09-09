@@ -72,7 +72,7 @@ export default function DonorTableRow({
               onClick={() => handleEditDonorData(donor)}
             >
               <Pencil />
-              <span>Editar donador</span>
+              <span>Editar donante</span>
             </button>
           ) : user.role === userRoles.ASSISTANT ? (
             <button

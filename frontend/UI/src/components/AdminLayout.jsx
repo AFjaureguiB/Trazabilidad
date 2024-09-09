@@ -120,7 +120,7 @@ export default function AdminLayout() {
          */}
         <div className="row-span-1 rounded-xl">
           {user.processId === 1 ? (
-            <LatestData title={"Últimos donadores"} href={"/donors"}>
+            <LatestData title={"Últimos Donantes"} href={"/donors"}>
               <LatestDonorsInfo />
             </LatestData>
           ) : user.processId === 2 ? (

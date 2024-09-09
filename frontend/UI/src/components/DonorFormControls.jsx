@@ -1,7 +1,7 @@
 export default function DonorFormControls({ register, errors }) {
   return (
     <fieldset className="border border-slate-700 p-5 text-gray-100 rounded-lg space-y-4">
-      <legend>Donador</legend>
+      <legend>Donante</legend>
 
       <div className="flex gap-4">
         <div className="w-1/2">
