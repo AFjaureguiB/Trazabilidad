@@ -17,9 +17,6 @@ import logRoutes from "./logs.routes.js";
 
 import infectiousTestRoutes from "./infectiousTest.routes.js";
 
-// Importa el archivo de rutas de logs
-import logRoutes from "./logs.routes.js";
-
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
@@ -59,8 +56,7 @@ router.use(
   "/sterilization-batches",
   authenticationMiddleware,
   sterilizationBatchRoutes
-); // Define la ruta para consultar los logs /api/logs
-router.use("/logs", authenticationMiddleware, logRoutes);
+);
 
 
 router.use("/inventory", inventoryRoutes);
