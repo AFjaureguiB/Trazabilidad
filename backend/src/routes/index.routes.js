@@ -43,9 +43,6 @@ router.use("/tissues", authenticationMiddleware, tissueRoutes);
 // Define la ruta para consultar los logs /api/logs
 router.use("/logs", authenticationMiddleware, logRoutes);
 
-// Define la ruta para consultar los logs /api/logs
-router.use("/logs", authenticationMiddleware, logRoutes);
-
 //Define las rutas para las pruebas infecciosas /api/infectious/:id
 router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
 
