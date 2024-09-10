@@ -16,7 +16,7 @@ async function isAdmin(req, res, next) {
       where: { username: req.username },
       include: ["Role"],
     });
-    
+
     if (user.Role.name === "ADMIN") {
       next();
       return;
@@ -33,4 +33,27 @@ async function isAdmin(req, res, next) {
   }
 }
 
-export { isAdmin };
+async function isRoot(req, res, next) {
+  try {
+    const user = await User.findOne({
+      where: { username: req.username },
+      include: ["Role"],
+    });
+
+    if (user.Role.name === "ROOT") {
+      next();
+      return;
+    }
+
+    return respondError(
+      req,
+      res,
+      401,
+      "Se requiere un rol de ROOT para realizar esta acción"
+    );
+  } catch (error) {
+    handleError(error, "authorization.middleware -> isRoot");
+  }
+}
+
+export { isAdmin, isRoot };
