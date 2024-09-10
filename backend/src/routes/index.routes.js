@@ -12,6 +12,9 @@ import donorRoutes from "./donor.routes.js";
 
 import tissueRoutes from "./tissue.routes.js";
 
+// Importa el archivo de rutas de logs
+import logRoutes from "./logs.routes.js";
+
 import infectiousTestRoutes from "./infectiousTest.routes.js";
 
 /** Middleware de autenticación */
@@ -31,6 +34,8 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/donors", authenticationMiddleware, donorRoutes);
 //Define las rutas para los tejidos /api/tissues/:id
 router.use("/tissues", authenticationMiddleware, tissueRoutes);
+// Define la ruta para consultar los logs /api/logs
+router.use("/logs", authenticationMiddleware, logRoutes);
 
 //Define las rutas para las pruebas infecciosas /api/infectious/:id
 router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
