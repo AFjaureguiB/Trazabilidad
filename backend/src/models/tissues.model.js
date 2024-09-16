@@ -61,6 +61,31 @@ const Tissue = sequelize.define(
   },
   {
     tableName: "tissues",
+    hooks: {
+      afterCreate: async (tissue, options) => {
+        const defaultTests = [
+          "HB Core total",
+          "HbgAg",
+          "HCV",
+          "Sífilis",
+          "Chagas",
+          "Citomegalovirus Igm",
+          "HTLV 1-2",
+          "HIV 1-2",
+        ];
+
+        // Crear las 8 pruebas infecciosas por defecto
+        await Promise.all(
+          defaultTests.map((testName) =>
+            tissue.createInfectiousTest({
+              testName,
+              result: "No Realizado",
+              testedAt: new Date(),
+            })
+          )
+        );
+      },
+    },
   }
 );
 
