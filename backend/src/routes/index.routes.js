@@ -12,6 +12,8 @@ import donorRoutes from "./donor.routes.js";
 
 import tissueRoutes from "./tissue.routes.js";
 
+import infectiousTestRoutes from "./infectiousTest.routes.js";
+
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
 
@@ -26,6 +28,9 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/donors", authenticationMiddleware, donorRoutes);
 //Define las rutas para los tejidos /api/tissues/:id
 router.use("/tissues", authenticationMiddleware, tissueRoutes);
+
+//Define las rutas para las pruebas infecciosas /api/infectious/:id
+router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
 
 // Exporta el enrutador
 export default router;
