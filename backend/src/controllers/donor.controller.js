@@ -33,6 +33,21 @@ async function getDonors(req, res) {
   }
 }
 
+async function getDonorsTissuesInfectiousTests(req, res) {
+  try {
+    const [donors, donorsError] =
+      await DonorService.getDonorsTissuesInfectiousTests();
+    if (donorsError) return respondError(req, res, 404, donorsError);
+
+    donors.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, donors);
+  } catch (error) {
+    handleError(error, "donor.controller -> getDonorsTissuesInfectiousTests");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 //En esta V2 de createDonor, manejamos otros middlewares, y gestionamos en memoria el archivo PDF enviado en el form
 //De esta manera evitamos escribir directamente en el disco y despues borrar o renombrar el archivo.
 async function createDonorWithTissue(req, res) {
@@ -180,6 +195,7 @@ async function updateDonor(req, res) {
 
 export default {
   getDonors,
+  getDonorsTissuesInfectiousTests,
   createDonorWithTissue,
   addTissueToDonor,
   updateDonor,

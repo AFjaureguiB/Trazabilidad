@@ -13,6 +13,7 @@ import { isAdmin } from "../middlewares/authorization.middleware.js";
 const router = Router();
 
 router.get("/", DonorController.getDonors); // /api/donors/
+router.get("/tissues/infectious", DonorController.getDonorsTissuesInfectiousTests); // /api/donors/
 
 router.post("/", uploadAndValidateFile, DonorController.createDonorWithTissue);
 

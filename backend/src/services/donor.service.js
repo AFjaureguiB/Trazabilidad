@@ -1,7 +1,7 @@
 "use strict";
 
 /** Modelo de datos 'User' */
-import { Donor, Tissue } from "../models/index.js";
+import { Donor, Tissue, InfectiousTests } from "../models/index.js";
 import { TissueStatus } from "../constants/TissueStatus.js";
 import { handleError } from "../utils/errorHandler.js";
 
@@ -33,6 +33,31 @@ async function getDonors() {
     return [donors, null];
   } catch (error) {
     handleError(error, "donor.service -> getDonors");
+  }
+}
+
+async function getDonorsTissuesInfectiousTests() {
+  try {
+    const donorsFromDB = await Donor.findAll({
+      include: [
+        {
+          model: Tissue,
+          include: [
+            {
+              model: InfectiousTests, // Incluir las pruebas infecciosas de cada tejido
+              as: "infectiousTests", // El alias que definiste en la relación
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!donorsFromDB) return [null, "No hay informacion de donantes"];
+    const donors = donorsFromDB.map((donor) => donor.toJSON());
+
+    return [donors, null];
+  } catch (error) {
+    handleError(error, "donor.service -> getDonorsTissuesInfectiousTests");
   }
 }
 
@@ -131,6 +156,9 @@ async function updateDonor(id, donorData) {
 
     if (!donorFound) return [null, "El donador no existe", null];
 
+    //Si el campo DNI del donador se actualiza, es necesario actualizar el path del archivo PDF, ya que si no, se quedara con el anterior DNI
+    //Para realizar lo anterior es necesario actualizar cada tejido asociado a este donador, y esto no solo en la DB, si no tambien renombrar los archivos ya creados.
+    //Agregar UUID para nombrar el archivo, y que asi no dependa de la info del donador y tissue
     const previusDonor = donorFound.toJSON();
 
     await donorFound.update(donorData);
@@ -197,6 +225,7 @@ async function deleteDonor(id) {
 
 export default {
   getDonors,
+  getDonorsTissuesInfectiousTests,
   createDonorWithTissue,
   addTissueToDonor,
   getDonorById,
