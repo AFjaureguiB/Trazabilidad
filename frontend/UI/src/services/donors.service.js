@@ -24,6 +24,25 @@ export const getDonors = async () => {
   }
 };
 
+export const getDonorsTissuesInfectiousTests = async () => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+    const response = await axios.get("/donors/tissues/infectious", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const { status, data } = response;
+    if (status === 200) {
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
+
 export const createDonorWithTissue = async (donorData) => {
   try {
     const token = localStorage.getItem("accestkn");

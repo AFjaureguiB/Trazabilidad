@@ -9,6 +9,7 @@ import DocumentArrowDown from "./icons/DocumentArrowDown";
 import User from "./icons/User";
 import Plus from "./icons/Plus.jsx";
 import Chevron from "./icons/Chevron.jsx";
+import { TissueStatus } from "../constants/results.js";
 
 export default function DonorTableRow({
   donor,
@@ -100,7 +101,20 @@ export default function DonorTableRow({
               <tr key={tissue.code} className="border-b">
                 <td colSpan={6}>
                   <div className="px-6 py-4">
-                    <div className="grid grid-cols-5 grid-rows-1 gap-4 items-center border border-blue-100 p-2 rounded-lg bg-blue-50/80">
+                    <div
+                      className={`grid grid-cols-5 grid-rows-1 gap-4 items-center border p-2 rounded-lg
+                      ${
+                        tissue.status === TissueStatus.QUARANTINE
+                          ? "border-blue-100 bg-blue-50/80"
+                          : tissue.status === TissueStatus.IN_TESTING
+                          ? "border-yellow-100 bg-yellow-50/80"
+                          : tissue.status === TissueStatus.ACCEPTED
+                          ? "border-green-100 bg-green-50/80"
+                          : tissue.status === TissueStatus.REJECTED
+                          ? "border-red-100 bg-red-50/80"
+                          : ""
+                      }`}
+                    >
                       <div className="flex gap-2 items-center">
                         <PuzzlePiece />
                         <div className="space-y-1">
@@ -169,7 +183,20 @@ export default function DonorTableRow({
                       <div className="flex justify-center">
                         <div className="space-y-3">
                           <p className="space-x-1">
-                            <span className="bg-blue-100 text-blue-800 text-sm font-medium px-2.5 py-0.5 rounded">
+                            <span
+                              className={`text-sm font-medium px-2.5 py-0.5 rounded
+                                ${
+                                  tissue.status === TissueStatus.QUARANTINE
+                                    ? "bg-blue-100 text-blue-800"
+                                    : tissue.status === TissueStatus.IN_TESTING
+                                    ? "bg-yellow-100 text-yellow-800"
+                                    : tissue.status === TissueStatus.ACCEPTED
+                                    ? "bg-green-100 text-green-800"
+                                    : tissue.status === TissueStatus.REJECTED
+                                    ? "bg-red-100 text-red-800"
+                                    : ""
+                                }`}
+                            >
                               {tissue.status}
                             </span>
                           </p>
