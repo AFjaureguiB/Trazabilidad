@@ -8,9 +8,10 @@ import Login from "./routes/Login.jsx";
 import App from "./routes/App.jsx";
 import ProtectedRoute from "./guard/ProtectedRoute.jsx";
 import Donors from "./routes/Donors.jsx";
+import InfectiousTests from "./routes/InfectiousTests.jsx";
 import { userRoles } from "./constants/user.roles.js";
 import { userProcesses } from "./constants/user.processes.js";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -31,6 +32,17 @@ const router = createBrowserRouter([
             userProcessIdAllowed={userProcesses.DONANTES_TEJIDOS}
           >
             <Donors />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/infectious-tests",
+        element: (
+          <ProtectedRoute
+            userRolesAllowed={[userRoles.ADMIN, userRoles.ASSISTANT]}
+            userProcessIdAllowed={userProcesses.PRUEBAS_INFECCIOSAS}
+          >
+            <InfectiousTests />
           </ProtectedRoute>
         ),
       },
