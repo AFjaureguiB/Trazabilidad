@@ -6,6 +6,7 @@ import UsersCard from "../components/UsersCard";
 import UserForm from "../components/UserForm";
 import LatestData from "./LatestData";
 import LatestDonorsInfo from "./LatestDonorsInfo";
+import LatestTissuesTestsInfo from "./LatestTissuesTestsInfo";
 import {
   getUsers,
   deleteUserById,
@@ -124,8 +125,11 @@ export default function AdminLayout() {
               <LatestDonorsInfo />
             </LatestData>
           ) : user.processId === 2 ? (
-            <LatestData title={"Últimas pruebas"} href={"/infectious-tests"}>
-              <p>Aqui iran las cosas de pruebas infeccionsas </p>
+            <LatestData
+              title={"Últimos estados de tejidos"}
+              href={"/infectious-tests"}
+            >
+              <LatestTissuesTestsInfo />
             </LatestData>
           ) : (
             <p>Aqui iran las cosas de otro proceso </p>
