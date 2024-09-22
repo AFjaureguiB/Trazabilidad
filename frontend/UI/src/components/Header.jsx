@@ -2,7 +2,7 @@ import LogoFundonemos from "../icons/Logo";
 
 export default function Header({ user, handleLogout }) {
   return (
-    <nav className="bg-slate-900 flex justify-between items-center p-4">
+    <nav className="bg-[#183254] flex justify-between items-center p-4">
       <a href="/">
         <LogoFundonemos />
       </a>
@@ -29,7 +29,7 @@ export default function Header({ user, handleLogout }) {
           </div>
         </div>
         <button
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-center text-white bg-blue-900 rounded-lg hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300"
+          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-[#AD1D43] focus:ring-4 focus:outline-none focus:ring-red-300"
           onClick={handleLogout}
         >
           <svg
