@@ -60,7 +60,7 @@ export default function AdminUsers() {
                 onClick={() => setShowCreateDonorModal(true)}
               >
                 <Plus className={"size-6"} />
-                Donador y Tejido
+                Donante y Tejido
               </button>
             </div>
           ) : null}

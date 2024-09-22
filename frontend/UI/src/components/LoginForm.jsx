@@ -38,9 +38,9 @@ function LoginForm() {
       <div className="absolute inset-0 bg-black/55 z-0"></div>
 
       {/* Contenido principal */}
-      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-9/10 gap-16 ">
+      <div className="relative z-10 flex flex-col md:flex-row items-center justify-between w-9/10 gap-12 bg-slate-100/60 px-6 rounded-xl shadow-2xl">
         <img src="/logoFHD.png" className="w-1/2 h-auto object-contain mr-1" />
-        <div className="p-14 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2 bg-slate-200/90 shadow-2xl">
+        <div className="p-10 rounded-xl flex flex-col items-center justify-center w-full md:w-1/2 bg-trasnparent">
           {feedBack && (
             <div
               className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 w-full"
@@ -57,7 +57,7 @@ function LoginForm() {
             <div>
               <label
                 htmlFor="username"
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Username:
               </label>
@@ -73,7 +73,7 @@ function LoginForm() {
             <div>
               <label
                 htmlFor="password"
-                className="block mb-2 text-sm font-medium text-gray-900"
+                className="block mb-2 text-sm font-medium text-black"
               >
                 Password:
               </label>
@@ -89,7 +89,7 @@ function LoginForm() {
             {errors.exampleRequired && <span>This field is required</span>}
             <input
               type="submit"
-              className="text-white w-full bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
+              className="text-white w-full bg-[#183254] hover:bg-[#2785c7] focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2"
               value="Ingresar"
             />
           </form>
