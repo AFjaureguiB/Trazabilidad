@@ -7,6 +7,7 @@ import TissueService from "../services/tissue.service.js";
 import { tissueSchema } from "../scheme/tissue.schema.js";
 import { idSchema } from "../scheme/miscellaneous.schema.js";
 import { savefile } from "../services/savefile.service.js";
+import { TissueStatus } from "../constants/TissueStatus.js";
 
 async function updateTissue(req, res) {
   try {
@@ -56,6 +57,29 @@ async function updateTissue(req, res) {
   }
 }
 
+async function getTissuesWithPieces(req, res) {
+  try {
+    const { query } = req;
+
+    const queryStatus = query.status.toUpperCase();
+    const status = TissueStatus[queryStatus];
+
+    const [tissues, tissuesError] = await TissueService.getTissuesWithPieces(
+      status
+    );
+
+    if (tissuesError) return respondError(req, res, 404, tissuesError);
+
+    tissues.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, tissues);
+  } catch (error) {
+    handleError(error, "tissue.controller -> getTissuesWithPieces");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   updateTissue,
+  getTissuesWithPieces,
 };

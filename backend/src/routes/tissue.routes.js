@@ -15,4 +15,6 @@ router.put(
   TissueController.updateTissue
 );
 
+router.get("/", TissueController.getTissuesWithPieces);
+
 export default router;

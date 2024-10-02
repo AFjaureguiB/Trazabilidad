@@ -1,6 +1,6 @@
 "use strict";
 
-import { Donor, Tissue } from "../models/index.js";
+import { Donor, Tissue, Piece } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
 import compareAndLogChanges from "../utils/compareChanges.js";
 
@@ -55,6 +55,38 @@ export async function updateTissue(id, tissueData, extname) {
   }
 }
 
+export async function getTissuesWithPieces(tissueStatus) {
+  try {
+    const tissuesFromDB = await Tissue.findAll({
+      where: {
+        status: tissueStatus,
+      },
+      include: [
+        {
+          model: Piece,
+          as: "pieces",
+        },
+        {
+          model: Donor,
+          attributes: ["names", "surnames"],
+        },
+      ],
+    });
+
+    if (!tissuesFromDB)
+      return [null, "No hay informacion de tejidos ni piezas"];
+
+    const tissues = tissuesFromDB.map((t) => t.toJSON());
+
+    return [tissues, null];
+  } catch (error) {
+    handleError(error, "tissue.service -> getAcceptedissuesWithPieces");
+
+    return [null, "Error al obtener informacion de tejidos"];
+  }
+}
+
 export default {
   updateTissue,
+  getTissuesWithPieces,
 };
