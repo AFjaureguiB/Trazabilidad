@@ -4,6 +4,8 @@ import Process from "./process.model.js";
 import Donor from "./donor.model.js";
 import Tissue from "./tissues.model.js";
 import InfectiousTests from "./Infectioustests.model.js";
+import Piece from "./piece.model.js";
+import PieceBatch from "./piecebatch.model.js";
 
 //Un role lo tienen varios usuarios
 Role.hasMany(User);
@@ -31,4 +33,36 @@ InfectiousTests.belongsTo(Tissue, {
   as: "tissue", // Alias para acceder al tejido desde la prueba
 });
 
-export { User, Role, Process, Donor, Tissue, InfectiousTests };
+Tissue.hasMany(Piece, {
+  foreignKey: "tissueId",
+  as: "pieces", // Alias para las piezas relacionadas con un tejido
+});
+
+Piece.belongsTo(Tissue, {
+  foreignKey: "tissueId",
+  as: "tissue", // Alias para acceder al tejido desde la pieza
+});
+
+// Relación Many-to-Many entre LotePiezas y Pieza a través de la tabla de unión lote_pieza
+PieceBatch.belongsToMany(Piece, {
+  through: "pieces_piecesbatches",
+  foreignKey: "piecesbatchId",
+  as: "pieces",
+});
+
+Piece.belongsToMany(PieceBatch, {
+  through: "pieces_piecesbatches",
+  foreignKey: "pieceId",
+  as: "batches",
+});
+
+export {
+  User,
+  Role,
+  Process,
+  Donor,
+  Tissue,
+  InfectiousTests,
+  Piece,
+  PieceBatch,
+};
