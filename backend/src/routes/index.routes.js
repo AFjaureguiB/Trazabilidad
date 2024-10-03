@@ -16,7 +16,7 @@ import infectiousTestRoutes from "./infectiousTest.routes.js";
 
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
-
+import pieceRoutes from "./piece.routes.js";
 /** Instancia del enrutador */
 const router = Router();
 
@@ -31,6 +31,8 @@ router.use("/tissues", authenticationMiddleware, tissueRoutes);
 
 //Define las rutas para las pruebas infecciosas /api/infectious/:id
 router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
+
+router.use("/pieces", authenticationMiddleware, pieceRoutes);
 
 // Exporta el enrutador
 export default router;
