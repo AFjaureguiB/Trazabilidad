@@ -13,6 +13,7 @@ import {
   addUser,
   updateUser,
 } from "../services/user.service";
+import { userProcesses } from "../constants/user.processes";
 
 export default function AdminLayout() {
   const [users, setUsers] = useState([]);
@@ -120,16 +121,23 @@ export default function AdminLayout() {
          * pero ya no aplicaria para el proceso pruebas `infecciones`
          */}
         <div className="row-span-1 rounded-xl">
-          {user.processId === 1 ? (
+          {user.processId === userProcesses.DONANTES_TEJIDOS ? (
             <LatestData title={"Últimos Donantes"} href={"/donors"}>
               <LatestDonorsInfo />
             </LatestData>
-          ) : user.processId === 2 ? (
+          ) : user.processId === userProcesses.PRUEBAS_INFECCIOSAS ? (
             <LatestData
               title={"Últimos estados de tejidos"}
               href={"/infectious-tests"}
             >
               <LatestTissuesTestsInfo />
+            </LatestData>
+          ) : user.processId === userProcesses.PROCESAMIENTO_TEJIDOS ? (
+            <LatestData
+              title={"Últimos estados de piezas"}
+              href={"/tissue-processing"}
+            >
+              <p> Info relevante para control de piezas ...</p>
             </LatestData>
           ) : (
             <p>Aqui iran las cosas de otro proceso </p>

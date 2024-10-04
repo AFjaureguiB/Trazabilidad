@@ -17,6 +17,9 @@ function App() {
   if (user.processId === userProcesses.PRUEBAS_INFECCIOSAS)
     return <Navigate to="/infectious-tests" />;
 
+  if (user.processId === userProcesses.PROCESAMIENTO_TEJIDOS)
+    return <Navigate to="/tissue-processing" />;
+
   return <p>Pagina principal para un usuario normal</p>;
 }
 

@@ -13,6 +13,7 @@ import { userRoles } from "./constants/user.roles.js";
 import { userProcesses } from "./constants/user.processes.js";
 import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
+import TissueProcessing from "./routes/TissueProcessing.jsx";
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,17 @@ const router = createBrowserRouter([
             userProcessIdAllowed={userProcesses.PRUEBAS_INFECCIOSAS}
           >
             <InfectiousTests />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/tissue-processing",
+        element: (
+          <ProtectedRoute
+            userRolesAllowed={[userRoles.ADMIN, userRoles.ASSISTANT]}
+            userProcessIdAllowed={userProcesses.PROCESAMIENTO_TEJIDOS}
+          >
+            <TissueProcessing />
           </ProtectedRoute>
         ),
       },
