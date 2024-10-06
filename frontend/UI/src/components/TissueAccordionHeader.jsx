@@ -68,6 +68,7 @@ export default function TissueAccordionHeader({
                 setPieceData({
                   tissue,
                   showCreatePiece: true,
+                  pieceToEdit: undefined,
                 });
               }}
             >

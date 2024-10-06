@@ -17,7 +17,8 @@ export default function TissueProcessing() {
   const [tissues, setTissues] = useState([]);
   const [pieceData, setPieceData] = useState({
     showCreatePiece: false,
-    tissue: {},
+    tissue: undefined,
+    pieceToEdit: undefined,
   });
 
   useEffect(() => {
@@ -221,10 +222,9 @@ export default function TissueProcessing() {
                           <PieceAccordionItem
                             key={piece.code}
                             code={piece.code}
-                            references={piece.references}
-                            description={piece.description}
-                            tissueCode={tissue.code}
-                            tissueType={tissue.tissuetype}
+                            piece={piece}
+                            tissue={tissue}
+                            setPieceData={setPieceData}
                           />
                         ))}
                       </div>
@@ -285,8 +285,7 @@ export default function TissueProcessing() {
                       <PieceAccordionItem
                         key={piece.code}
                         code={piece.code}
-                        references={piece.references}
-                        description={piece.description}
+                        piece={piece}
                       />
                     ))}
                   </div>
