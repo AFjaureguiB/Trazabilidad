@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import Modal from "./Modal.jsx";
 import { referencias } from "../constants/referencias.js";
-import { savePiece } from "../services/piece.service.js";
+import { savePiece, updatePiece } from "../services/piece.service.js";
 import { notifyError, notifySuccess } from "../utils/notifyToast.js";
 
 export default function CreatePieceForm({
@@ -15,42 +15,48 @@ export default function CreatePieceForm({
     register,
     handleSubmit,
     setValue,
-    watch,
     formState: { errors },
-    clearErrors,
     reset,
   } = useForm();
 
-  const selectedReferences = watch("references");
-
   useEffect(() => {
+    if (!pieceData.tissue) return;
     setValue("code", pieceData.tissue.code);
-    setValue("description", referencias[selectedReferences]);
     setValue("tissueId", pieceData.tissue.id);
-  }, [setValue, pieceData, setPieceData, selectedReferences]);
+
+    if (!pieceData.pieceToEdit) return;
+    const [, letter] = pieceData.pieceToEdit.code.split("-");
+    setValue("letter", letter);
+    setValue("references", pieceData.pieceToEdit.references);
+    setValue("id", pieceData.pieceToEdit.id);
+  }, [setValue, pieceData]);
 
   const handleClose = () => {
     setPieceData({
       showCreatePiece: false,
-      tissue: {},
+      tissue: undefined,
+      pieceToEdit: undefined,
     });
     reset();
   };
 
   const onSubmit = async (payload) => {
-    console.log(payload); // Aquí obtendrás todos los datos del formulario
     const {
       state,
       data,
       details: detailsError,
       message: messageError,
-    } = await savePiece(payload);
+    } = pieceData.pieceToEdit
+      ? await updatePiece(payload)
+      : await savePiece(payload);
 
     if (state === "Error") {
       notifyError(messageError);
     }
     if (state == "Success") {
-      const testMessage = `Pieza con codigo '${data.code}' creada con exito`;
+      const testMessage = pieceData.pieceToEdit
+        ? `Pieza con codigo '${data.code}' actualizada con exito`
+        : `Pieza con codigo '${data.code}' creada con exito`;
 
       notifySuccess(testMessage);
       handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
@@ -58,9 +64,10 @@ export default function CreatePieceForm({
     }
   };
 
+  const modalTitle = pieceData.pieceToEdit ? "Editar Pieza" : "Crear Pieza";
   return (
     <Modal
-      title={"Crear Pieza"}
+      title={modalTitle}
       showModal={pieceData.showCreatePiece}
       handleClose={handleClose}
     >
@@ -167,7 +174,7 @@ export default function CreatePieceForm({
               type="submit"
               className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-              Registrar
+              {pieceData.pieceToEdit ? "Actulizar" : "Registrar"}
             </button>
             <button
               type="button"
