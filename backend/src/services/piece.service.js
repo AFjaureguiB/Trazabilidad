@@ -27,6 +27,22 @@ async function savePiece(tissueId, piece) {
   }
 }
 
+async function updatePiece(id, pieceData) {
+  try {
+    const pieceFound = await Piece.findByPk(id);
+    if (!pieceFound) return [null, "La pieza no existe"];
+
+    await pieceFound.update(pieceData);
+    await pieceFound.reload();
+
+    return [pieceFound.toJSON(), null];
+  } catch (error) {
+    handleError(error, "piece.service -> updatePiece");
+    return [null, "Error al actuializar la pieza"];
+  }
+}
+
 export default {
   savePiece,
+  updatePiece,
 };

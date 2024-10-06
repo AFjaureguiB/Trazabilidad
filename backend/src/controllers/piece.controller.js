@@ -6,7 +6,6 @@ import { respondError, respondSuccess } from "../utils/resHandler.js";
 async function savePiece(req, res) {
   try {
     const { body } = req;
-    console.log(body);
     const { tissueId, ...piece } = body;
 
     //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
@@ -27,6 +26,30 @@ async function savePiece(req, res) {
   }
 }
 
+async function updatePiece(req, res) {
+  try {
+    const { id, ...pieceData } = req.body;
+
+    //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
+
+    const [updatedPiece, updatedPieceError] = await PieceService.updatePiece(
+      id,
+      pieceData
+    );
+
+    if (updatedPieceError)
+      return respondError(req, res, 400, updatedPieceError);
+    if (!updatedPiece)
+      return respondError(req, res, 400, "No se actualizo la pieza");
+
+    respondSuccess(req, res, 200, updatedPiece);
+  } catch (error) {
+    handleError(error, "piece.controller -> updatePiece");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePiece,
+  updatePiece,
 };
