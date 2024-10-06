@@ -5,13 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import Pencil from "./icons/Pencil";
 
 // eslint-disable-next-line react/prop-types
-export default function PieceAccordionItem({
-  code,
-  references,
-  description,
-  tissueCode,
-  tissueType,
-}) {
+export default function PieceAccordionItem({ setPieceData, piece, tissue }) {
   const { user } = useAuth();
   return (
     <div className="border border-gray-300  rounded-lg overflow-hidden">
@@ -21,7 +15,7 @@ export default function PieceAccordionItem({
             <div className="text-base font-semibold">Codigo de Pieza</div>
             <div>
               <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-                {code}
+                {piece.code}
               </span>
             </div>
           </div>
@@ -30,36 +24,42 @@ export default function PieceAccordionItem({
           <p className="space-x-1 text-gray-500">
             <span>Referencia: </span>
             <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              {references}
+              {piece.references}
             </span>
           </p>
           <p className="space-x-1 text-gray-500">
             <span>Descripcion: </span>
             <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              {description}
+              {piece.description}
             </span>
           </p>
         </div>
-        <div className="flex flex-col gap-2 text-right text-sm">
-          <p className="space-x-1 text-gray-500">
-            <span>Codigo Tejido:</span>
-            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              {tissueCode}
-            </span>
-          </p>
-          <p className="space-x-1 text-gray-500">
-            <span>Tejido: </span>
-            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
-              {tissueType}
-            </span>
-          </p>
-        </div>
+        {tissue ? (
+          <div className="flex flex-col gap-2 text-right text-sm">
+            <p className="space-x-1 text-gray-500">
+              <span>Codigo Tejido:</span>
+              <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                {tissue.code}
+              </span>
+            </p>
+            <p className="space-x-1 text-gray-500">
+              <span>Tejido: </span>
+              <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                {tissue.tissuetype}
+              </span>
+            </p>
+          </div>
+        ) : null}
         {user.role === userRoles.ADMIN ? (
           <button
             className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
             onClick={(e) => {
               e.stopPropagation();
-              console.log("clock!!");
+              setPieceData({
+                tissue,
+                showCreatePiece: true,
+                pieceToEdit: piece,
+              });
             }}
           >
             <Pencil className={"size-5"} />
