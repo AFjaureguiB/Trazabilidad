@@ -16,7 +16,10 @@ import infectiousTestRoutes from "./infectiousTest.routes.js";
 
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
+
 import pieceRoutes from "./piece.routes.js";
+
+import pieceBatchRoutes from "./pieceBatch.routes.js";
 /** Instancia del enrutador */
 const router = Router();
 
@@ -34,5 +37,6 @@ router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
 
 router.use("/pieces", authenticationMiddleware, pieceRoutes);
 
+router.use("/pieces-batches", authenticationMiddleware, pieceBatchRoutes);
 // Exporta el enrutador
 export default router;
