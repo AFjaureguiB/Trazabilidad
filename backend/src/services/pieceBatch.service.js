@@ -1,10 +1,17 @@
 "use strict";
-import { PieceBatch } from "../models/index.js";
+import { PieceBatch, Piece } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
 
 async function getPieceBatch() {
   try {
-    const piecesBatchesFromDB = await PieceBatch.findAll();
+    const piecesBatchesFromDB = await PieceBatch.findAll({
+      include: [
+        {
+          model: Piece,
+          as: "pieces", // Alias definido en la relación
+        },
+      ],
+    });
     if (!piecesBatchesFromDB)
       return [null, "No hay informacion de lotes de piezas"];
 
