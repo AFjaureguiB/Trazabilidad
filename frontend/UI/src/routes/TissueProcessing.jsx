@@ -10,19 +10,25 @@ import TissueAccordionHeader from "../components/TissueAccordionHeader.jsx";
 import { getTissuesWithPieces } from "../services/tissue.service.js";
 import { useEffect, useState } from "react";
 import CreatePieceForm from "../components/CreatePieceForm.jsx";
+import CreatePieceBatchForm from "../components/CreatePieceBatchForm.jsx";
+import { getPieceBatch } from "../services/piecebatch.service.js";
 
 export default function TissueProcessing() {
   const { user } = useAuth();
 
   const [tissues, setTissues] = useState([]);
+  const [piecesBatches, setPiecesBatches] = useState([]);
   const [pieceData, setPieceData] = useState({
     showCreatePiece: false,
     tissue: undefined,
     pieceToEdit: undefined,
   });
 
+  const [batchData, setBatchData] = useState({ showCreatePieceBatch: false });
+
   useEffect(() => {
     fetchTissues();
+    fetchPiecesBatches();
   }, []);
 
   const fetchTissues = async () => {
@@ -35,88 +41,15 @@ export default function TissueProcessing() {
     setTissues(data);
   };
 
-  const batches = [
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-    {
-      batchNumber: "8712563",
-      startDate: "23/09/2024",
-      endDate: "23/09/2024",
-      status: "Stand By",
-      totalItems: "25 Piezas",
-      piezas: ["Pieza 1", "Pieza 2", "Pieza 3"],
-    },
-  ];
+  const fetchPiecesBatches = async () => {
+    const {
+      state,
+      data,
+      details: detailsError,
+      message: messageError,
+    } = await getPieceBatch();
+    setPiecesBatches(data);
+  };
 
   const pieces = [
     {
@@ -242,7 +175,9 @@ export default function TissueProcessing() {
                   {user.role === userRoles.ASSISTANT ? (
                     <button
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 flex gap-2 items-center"
-                      onClick={() => console.log("clic!")}
+                      onClick={() =>
+                        setBatchData({ showCreatePieceBatch: true })
+                      }
                     >
                       <Plus className={"size-6"} />
                       Nuevo Lote
@@ -255,19 +190,26 @@ export default function TissueProcessing() {
                 </div>
                 <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
                   <Accordion allowMultiple>
-                    {batches.map((batch) => (
+                    {piecesBatches.map((batch) => (
                       <Accordion.Item
-                        key={batch.batchNumber}
+                        key={batch.id}
                         header={<LoteAccordionHeader />}
-                        batchNumber={batch.batchNumber}
-                        startDate={batch.startDate}
-                        endDate={batch.endDate}
+                        batchNumber={batch.id}
+                        startDate={batch.startdate}
+                        endDate={batch.enddate}
                         status={batch.status}
-                        totalItems={batch.totalItems}
+                        totalPieces={batch.pieces.length}
                       >
-                        {batch.piezas.map((pieza) => (
-                          <p key={pieza}>{pieza}</p>
-                        ))}
+                        <div className="space-y-2 mt-2">
+                          {batch.pieces.map((pieza) => (
+                            <p
+                              key={pieza}
+                              className="border border-gray-200 p-2 rounded-md"
+                            >
+                              {pieza.description} {pieza.references}
+                            </p>
+                          ))}
+                        </div>
                       </Accordion.Item>
                     ))}
                   </Accordion>
@@ -299,6 +241,11 @@ export default function TissueProcessing() {
         pieceData={pieceData}
         setPieceData={setPieceData}
         fetchTissues={fetchTissues}
+      />
+      <CreatePieceBatchForm
+        batchData={batchData}
+        setBatchData={setBatchData}
+        fetchPiecesBatches={fetchPiecesBatches}
       />
     </>
   );
