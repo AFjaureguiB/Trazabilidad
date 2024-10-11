@@ -49,7 +49,22 @@ async function updatePiece(req, res) {
   }
 }
 
+async function getPiecesWithoutBatch(req, res) {
+  try {
+    const [pieces, piecesError] = await PieceService.getPiecesWithoutBatch();
+    if (piecesError) return respondError(req, res, 404, piecesError);
+
+    pieces.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, pieces);
+  } catch (error) {
+    handleError(error, "piece.controller -> getPiecesWithoutBatch");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
+  getPiecesWithoutBatch,
 };

@@ -1,4 +1,4 @@
-import { Tissue, Piece } from "../models/index.js";
+import { Tissue, Piece, PieceBatch } from "../models/index.js";
 
 export async function existPieceWithCode(code) {
   const pieceCount = await Piece.count({
@@ -42,7 +42,34 @@ async function updatePiece(id, pieceData) {
   }
 }
 
+async function getPiecesWithoutBatch() {
+  try {
+    const piezasSinLoteFromDB = await Piece.findAll({
+      include: [
+        {
+          model: PieceBatch,
+          as: "batches",
+          required: false,
+        },
+      ],
+      where: {
+        "$batches.id$": null,
+      },
+    });
+    if (!piezasSinLoteFromDB)
+      return [null, "No logramos recuperar las piezas sin lote"];
+
+    const piezasSinLote = piezasSinLoteFromDB.map((p) => p.toJSON());
+
+    return [piezasSinLote, null];
+  } catch (error) {
+    handleError(error, "piece.service -> getPiecesWithoutBatch");
+    return [null, "Error al recuperar piezas sin lote"];
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
+  getPiecesWithoutBatch,
 };

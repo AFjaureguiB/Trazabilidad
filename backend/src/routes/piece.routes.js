@@ -9,6 +9,7 @@ import PieceController from "../controllers/piece.controller.js";
 /** Instancia del enrutador */
 const router = Router();
 
+router.get("/withoutbatch", PieceController.getPiecesWithoutBatch);
 router.post("/", PieceController.savePiece);
 router.put("/", isAdmin, PieceController.updatePiece);
 
