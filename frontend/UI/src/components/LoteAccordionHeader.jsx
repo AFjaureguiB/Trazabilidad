@@ -10,7 +10,7 @@ export default function LoteAccordionHeader({
   totalPieces,
 }) {
   return (
-    <div className="border border-gray-300 rounded-lg overflow-hidden">
+    <div className={`${isActive ? "border-b border-gray-300" : ""}`}>
       <div
         className={`flex justify-between items-center hover:bg-gray-100 p-4 ${
           isActive ? "bg-gray-100" : "bg-gray-50"
@@ -63,6 +63,16 @@ export default function LoteAccordionHeader({
             </span>
           </p>
         </div>
+        {status !== "Closed" ? (
+          <div>
+            <button
+              className="px-3 py-2 text-xs font-medium text-center text-red-800 bg-red-100 rounded-lg hover:bg-red-200 focus:ring-4 focus:outline-none focus:ring-red-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              Cerrar Lote
+            </button>
+          </div>
+        ) : null}
         <div className="px-6 py-4">
           <div>
             <Chevron className={`size-6 ${isActive ? "rotate-180" : ""}`} />
