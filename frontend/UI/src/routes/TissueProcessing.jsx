@@ -31,7 +31,10 @@ export default function TissueProcessing() {
     pieceToEdit: undefined,
   });
 
-  const [batchData, setBatchData] = useState({ showCreatePieceBatch: false });
+  const [batchData, setBatchData] = useState({
+    showCreatePieceBatch: false,
+    batch: undefined,
+  });
 
   useEffect(() => {
     fetchTissues();
@@ -146,7 +149,10 @@ export default function TissueProcessing() {
                     <button
                       className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 flex gap-2 items-center"
                       onClick={() =>
-                        setBatchData({ showCreatePieceBatch: true })
+                        setBatchData({
+                          showCreatePieceBatch: true,
+                          batch: undefined,
+                        })
                       }
                     >
                       <Plus className={"size-6"} />
@@ -165,6 +171,7 @@ export default function TissueProcessing() {
                         key={batch.id}
                         header={<LoteAccordionHeader />}
                         batch={batch}
+                        setBatchData={setBatchData}
                         className={
                           "border border-gray-300 rounded-lg overflow-hidden"
                         }

@@ -3,8 +3,12 @@ import { useForm } from "react-hook-form";
 import Modal from "./Modal.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
 import { userRoles } from "../constants/user.roles.js";
-import { savePieceBatch } from "../services/piecebatch.service.js";
+import {
+  savePieceBatch,
+  updatedPieceBatch,
+} from "../services/piecebatch.service.js";
 import { notifyError, notifySuccess } from "../utils/notifyToast.js";
+import { useEffect } from "react";
 
 export default function CreatePieceBatchForm({
   batchData,
@@ -21,14 +25,27 @@ export default function CreatePieceBatchForm({
 
   const { user } = useAuth();
 
+  useEffect(() => {
+    if (!batchData.batch) return;
+    const { batch } = batchData;
+
+    setValue("id", batch.id);
+    setValue("startdate", batch.startdate);
+    setValue("enddate", batch.enddate);
+    setValue("status", batch.status);
+  }, [setValue, batchData]);
+
   const handleClose = () => {
     setBatchData({
       showCreatePieceBatch: false,
+      batch: undefined,
     });
     reset();
   };
 
-  const modalTitle = "Crear Lote de Piezas";
+  const modalTitle = !batchData.batch
+    ? "Crear Lote de Piezas"
+    : "Editar Lote de Piezas";
 
   const onSubmit = async (payload) => {
     console.log(payload);
@@ -37,14 +54,20 @@ export default function CreatePieceBatchForm({
       data,
       details: detailsError,
       message: messageError,
-    } = await savePieceBatch(payload);
+    } = !batchData.batch
+      ? await savePieceBatch(payload)
+      : await updatedPieceBatch(payload);
 
     if (state === "Error") {
       notifyError(messageError);
     }
 
     if (state == "Success") {
-      const message = `Lote de piezas creado con exito con exito, fecha inicial: ${data.startdate}, fecha final: ${data.enddate}`;
+      const message = `Lote de piezas ${
+        !batchData.batch ? "creado" : "actualizado"
+      }  con exito, fecha inicial: ${data.startdate}, fecha final: ${
+        data.enddate
+      }, status: ${data.status}`;
 
       notifySuccess(message);
       handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
@@ -60,8 +83,7 @@ export default function CreatePieceBatchForm({
     >
       <div className="p-4 md:p-5">
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
-          <div className=" text-gray-100 space-y-4">
-            <input type="hidden" {...register("pieceBatchId")} />
+          <div className="text-gray-100 space-y-4">
             <div className="flex gap-4">
               <div className="w-1/2">
                 <label
@@ -139,7 +161,7 @@ export default function CreatePieceBatchForm({
                 <option value=""> Selecciona una opción </option>
                 <option value="Stand By">Stand By</option>
                 {user.role === userRoles.ADMIN ? (
-                  <option value="Cerrado">Cerrado</option>
+                  <option value="Closed">Cerrado</option>
                 ) : null}
               </select>
               {errors.status && (
@@ -154,7 +176,7 @@ export default function CreatePieceBatchForm({
               type="submit"
               className="w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
             >
-              Registrar
+              {!batchData.batch ? "Registrar" : "Actulizar"}
             </button>
             <button
               type="button"

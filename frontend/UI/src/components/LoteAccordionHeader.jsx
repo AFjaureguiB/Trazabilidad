@@ -1,11 +1,17 @@
 /* eslint-disable react/prop-types */
 import Chevron from "../components/icons/Chevron.jsx";
+import { userRoles } from "../constants/user.roles.js";
+import { useAuth } from "../context/AuthContext.jsx";
+import Pencil from "./icons/Pencil.jsx";
 
 export default function LoteAccordionHeader({
   isActive,
   batch,
   closePieceBatch,
+  setBatchData,
 }) {
+  const { user } = useAuth();
+
   const { id: batchNumber, startdate, enddate, status, pieces } = batch;
   const totalPieces = pieces.length;
 
@@ -63,7 +69,7 @@ export default function LoteAccordionHeader({
             </span>
           </p>
         </div>
-        {status !== "Closed" ? (
+        {status === "Stand By" && user.role === userRoles.ASSISTANT ? (
           <div>
             <button
               className="px-3 py-2 text-xs font-medium text-center text-red-800 bg-red-100 rounded-lg hover:bg-red-200 focus:ring-4 focus:outline-none focus:ring-red-300"
@@ -73,6 +79,19 @@ export default function LoteAccordionHeader({
               }}
             >
               Cerrar Lote
+            </button>
+          </div>
+        ) : user.role === userRoles.ADMIN ? (
+          <div>
+            <button
+              className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                setBatchData({ showCreatePieceBatch: true, batch });
+              }}
+            >
+              <Pencil className={"size-5"} />
+              <span>Editar Lote</span>
             </button>
           </div>
         ) : null}
