@@ -10,6 +10,7 @@ export default function CreatePieceForm({
   pieceData,
   setPieceData,
   fetchTissues,
+  fetchPiecesBatches,
   fetchPiecesWithoutBatch,
 }) {
   const {
@@ -62,6 +63,7 @@ export default function CreatePieceForm({
       notifySuccess(testMessage);
       handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
       fetchTissues();
+      fetchPiecesBatches();
       fetchPiecesWithoutBatch();
     }
   };

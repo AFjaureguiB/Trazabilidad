@@ -32,7 +32,6 @@ export default function AddPieceToBathcForm({
       batchId: payload.batchId,
       pieces,
     };
-    console.log("Datos enviados:", formData);
     const {
       state,
       data,
