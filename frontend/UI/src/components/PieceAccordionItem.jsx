@@ -8,7 +8,7 @@ import Pencil from "./icons/Pencil";
 export default function PieceAccordionItem({ setPieceData, piece, tissue }) {
   const { user } = useAuth();
   return (
-    <div className="border border-gray-300  rounded-lg overflow-hidden">
+    <div className="border border-gray-300  rounded-lg overflow-hidden w-full">
       <div className="flex justify-between items-center bg-gray-50 hover:bg-gray-100  p-4">
         <div className="flex flex-col gap-2 text-left text-sm">
           <div className="ps-3 space-y-1">
