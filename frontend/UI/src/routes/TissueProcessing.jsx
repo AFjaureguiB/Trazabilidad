@@ -12,12 +12,15 @@ import { useEffect, useState } from "react";
 import CreatePieceForm from "../components/CreatePieceForm.jsx";
 import CreatePieceBatchForm from "../components/CreatePieceBatchForm.jsx";
 import { getPieceBatch } from "../services/piecebatch.service.js";
+import { getPiecesWithoutBatch } from "../services/piece.service.js";
+import AddPieceToBathcForm from "../components/AddPieceToBathcForm.jsx";
 
 export default function TissueProcessing() {
   const { user } = useAuth();
 
   const [tissues, setTissues] = useState([]);
   const [piecesBatches, setPiecesBatches] = useState([]);
+  const [piecesWithoutBatch, setPiecesWithoutBatch] = useState([]);
   const [pieceData, setPieceData] = useState({
     showCreatePiece: false,
     tissue: undefined,
@@ -29,6 +32,7 @@ export default function TissueProcessing() {
   useEffect(() => {
     fetchTissues();
     fetchPiecesBatches();
+    fetchPiecesWithoutBatch();
   }, []);
 
   const fetchTissues = async () => {
@@ -51,73 +55,16 @@ export default function TissueProcessing() {
     setPiecesBatches(data);
   };
 
-  const pieces = [
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-    {
-      code: "1234A",
-      references: "CD001",
-      description: "Some descrition here ...",
-    },
-  ];
+  const fetchPiecesWithoutBatch = async () => {
+    const {
+      state,
+      data,
+      details: detailsError,
+      message: messageError,
+    } = await getPiecesWithoutBatch();
+    setPiecesWithoutBatch(data);
+  };
+
   return (
     <>
       {user.role === userRoles.ADMIN ? (
@@ -154,7 +101,6 @@ export default function TissueProcessing() {
                         {tissue.pieces.map((piece) => (
                           <PieceAccordionItem
                             key={piece.code}
-                            code={piece.code}
                             piece={piece}
                             tissue={tissue}
                             setPieceData={setPieceData}
@@ -203,7 +149,7 @@ export default function TissueProcessing() {
                         <div className="space-y-2 mt-2">
                           {batch.pieces.map((pieza) => (
                             <p
-                              key={pieza}
+                              key={pieza.id}
                               className="border border-gray-200 p-2 rounded-md"
                             >
                               {pieza.description} {pieza.references}
@@ -216,22 +162,11 @@ export default function TissueProcessing() {
                 </div>
               </div>
               <div className="w-1/2">
-                <div className="my-4">
-                  <h6 className="text-xl text-gray-500 font-bold py-2">
-                    Piezas sin Lote
-                  </h6>
-                </div>
-                <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
-                  <div className="space-y-2">
-                    {pieces.map((piece) => (
-                      <PieceAccordionItem
-                        key={piece.code}
-                        code={piece.code}
-                        piece={piece}
-                      />
-                    ))}
-                  </div>
-                </div>
+                <AddPieceToBathcForm
+                  piecesWithoutBatch={piecesWithoutBatch}
+                  fetchPiecesBatches={fetchPiecesBatches}
+                  fetchPiecesWithoutBatch={fetchPiecesWithoutBatch}
+                />
               </div>
             </div>
           </Tabs.Item>
@@ -241,6 +176,7 @@ export default function TissueProcessing() {
         pieceData={pieceData}
         setPieceData={setPieceData}
         fetchTissues={fetchTissues}
+        fetchPiecesWithoutBatch={fetchPiecesWithoutBatch}
       />
       <CreatePieceBatchForm
         batchData={batchData}

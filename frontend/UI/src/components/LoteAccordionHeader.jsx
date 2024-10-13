@@ -43,7 +43,16 @@ export default function LoteAccordionHeader({
         <div>
           <p className="space-x-1 text-gray-500">
             <span>Status:</span>
-            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+            <span
+              className={`text-xs font-medium me-2 px-2.5 py-0.5 rounded 
+                ${
+                  status === "Stand By"
+                    ? "bg-indigo-100 text-indigo-800"
+                    : status === "Closed"
+                    ? "bg-red-100 text-red-800"
+                    : ""
+                }`}
+            >
               {status}
             </span>
           </p>
