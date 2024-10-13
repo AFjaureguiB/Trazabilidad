@@ -61,3 +61,22 @@ export const addPiecesToPieceBatch = async (payload) => {
     return error.response.data;
   }
 };
+
+export const updatedPieceBatch = async (payload) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.put("/pieces-batches", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};

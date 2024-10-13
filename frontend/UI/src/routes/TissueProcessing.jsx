@@ -11,9 +11,13 @@ import { getTissuesWithPieces } from "../services/tissue.service.js";
 import { useEffect, useState } from "react";
 import CreatePieceForm from "../components/CreatePieceForm.jsx";
 import CreatePieceBatchForm from "../components/CreatePieceBatchForm.jsx";
-import { getPieceBatch } from "../services/piecebatch.service.js";
+import {
+  getPieceBatch,
+  updatedPieceBatch,
+} from "../services/piecebatch.service.js";
 import { getPiecesWithoutBatch } from "../services/piece.service.js";
 import AddPieceToBathcForm from "../components/AddPieceToBathcForm.jsx";
+import { notifyError, notifySuccess } from "../utils/notifyToast.js";
 
 export default function TissueProcessing() {
   const { user } = useAuth();
@@ -63,6 +67,26 @@ export default function TissueProcessing() {
       message: messageError,
     } = await getPiecesWithoutBatch();
     setPiecesWithoutBatch(data);
+  };
+
+  const closePieceBatch = async (piecebatchData) => {
+    piecebatchData.status = "Closed";
+    const {
+      state,
+      data,
+      details: detailsError,
+      message: messageError,
+    } = await updatedPieceBatch(piecebatchData);
+
+    if (state === "Error") {
+      notifyError(messageError);
+    }
+
+    if (state == "Success") {
+      const message = `Lote de piezas con numero ${data.id}, actualizado a estado: ${data.status}`;
+      notifySuccess(message);
+      fetchPiecesBatches();
+    }
   };
 
   return (
@@ -140,14 +164,11 @@ export default function TissueProcessing() {
                       <Accordion.Item
                         key={batch.id}
                         header={<LoteAccordionHeader />}
-                        batchNumber={batch.id}
-                        startDate={batch.startdate}
-                        endDate={batch.enddate}
-                        status={batch.status}
-                        totalPieces={batch.pieces.length}
+                        batch={batch}
                         className={
                           "border border-gray-300 rounded-lg overflow-hidden"
                         }
+                        closePieceBatch={closePieceBatch}
                       >
                         <div className="space-y-2 mt-2 p-4">
                           {batch.pieces.map((pieza) => (
@@ -199,6 +220,7 @@ export default function TissueProcessing() {
         pieceData={pieceData}
         setPieceData={setPieceData}
         fetchTissues={fetchTissues}
+        fetchPiecesBatches={fetchPiecesBatches}
         fetchPiecesWithoutBatch={fetchPiecesWithoutBatch}
       />
       <CreatePieceBatchForm
