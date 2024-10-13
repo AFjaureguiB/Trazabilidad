@@ -14,7 +14,6 @@ export const savePiece = async (payload) => {
       references: payload.references,
       description,
     };
-    console.log(pieceData);
     const response = await axios.post("/pieces", pieceData, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -44,14 +43,32 @@ export const updatePiece = async (payload) => {
       description,
     };
 
-    console.log(pieceData);
-
     const response = await axios.put("/pieces", pieceData, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
+
+export const getPiecesWithoutBatch = async () => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.get("/pieces/withoutbatch", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 204) return { state: "Success", data: [] };
     if (status === 200) return data;
   } catch (error) {
     console.log(error);
