@@ -44,8 +44,6 @@ async function savePieceBatch(req, res) {
 async function addPiecesToPieceBatch(req, res) {
   try {
     const { batchId, pieces } = req.body;
-    console.log(pieces);
-
     //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
 
     const [piecesAdded, piecesAddedError] =
@@ -60,8 +58,27 @@ async function addPiecesToPieceBatch(req, res) {
   }
 }
 
+async function updatePieceBatch(req, res) {
+  try {
+    const { id, ...pieceBatchData } = req.body;
+    //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
+
+    const [updatedPieceBatch, updatedPieceBatchError] =
+      await pieceBatchService.updatePieceBatch(id, pieceBatchData);
+
+    if (updatedPieceBatchError)
+      return respondError(req, res, 400, updatedPieceBatchError);
+
+    respondSuccess(req, res, 200, updatedPieceBatch);
+  } catch (error) {
+    handleError(error, "pieceBatch.controller -> updatePieceBatch");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePieceBatch,
   getPieceBatch,
   addPiecesToPieceBatch,
+  updatePieceBatch,
 };

@@ -45,8 +45,6 @@ async function addPiecesToPieceBatch(batchId, pieces) {
     if (batch.status === "Closed")
       return [null, "El lote al que intentas agregar piezas esta cerrado"];
 
-    console.log(batch);
-
     const ids = pieces.map((p) => p.id); //el metodo generado por sequelize, solo acepta instancias de tipo Sequelize o un array con los ID's
     await batch.addPieces(ids);
 
@@ -63,8 +61,26 @@ async function addPiecesToPieceBatch(batchId, pieces) {
   }
 }
 
+async function updatePieceBatch(id, pieceBatchData) {
+  try {
+    const pieceBatchFound = await PieceBatch.findByPk(id);
+
+    if (!pieceBatchFound) return [null, "El lote no existe"];
+
+    await pieceBatchFound.update(pieceBatchData);
+    await pieceBatchFound.reload();
+
+    return [pieceBatchFound.toJSON(), null];
+  } catch (error) {
+    handleError(error, "pieceBatch.service -> updatePieceBatch");
+
+    return [null, "Error al actualizar el lote de piezas"];
+  }
+}
+
 export default {
   savePieceBatch,
   getPieceBatch,
   addPiecesToPieceBatch,
+  updatePieceBatch,
 };
