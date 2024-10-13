@@ -9,4 +9,5 @@ const router = Router();
 
 router.get("/", pieceBatchController.getPieceBatch);
 router.post("/", pieceBatchController.savePieceBatch);
+router.post("/addpieces", pieceBatchController.addPiecesToPieceBatch);
 export default router;
