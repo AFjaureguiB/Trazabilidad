@@ -124,7 +124,32 @@ export default function AddPieceToBathcForm({
                   value={piece.id}
                   {...register("selectedPieces")}
                 />
-                <PieceAccordionItem piece={piece} className={"w-full"} />
+                <div
+                  key={piece.id}
+                  className="bg-blue-50/50 border border-blue-200 py-4 px-6 rounded-md flex justify-between w-full items-center gap-2 flex-wrap"
+                >
+                  <div className="space-y-2">
+                    <p>
+                      Codigo:
+                      <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        {piece.code}
+                      </span>
+                    </p>
+
+                    <p>
+                      Referencia:
+                      <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                        {piece.references}{" "}
+                      </span>
+                    </p>
+                  </div>
+                  <p>
+                    Descripcion:{" "}
+                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                      {piece.description}
+                    </span>
+                  </p>
+                </div>
               </div>
             ))
           )}

@@ -145,15 +145,38 @@ export default function TissueProcessing() {
                         endDate={batch.enddate}
                         status={batch.status}
                         totalPieces={batch.pieces.length}
+                        className={
+                          "border border-gray-300 rounded-lg overflow-hidden"
+                        }
                       >
-                        <div className="space-y-2 mt-2">
+                        <div className="space-y-2 mt-2 p-4">
                           {batch.pieces.map((pieza) => (
-                            <p
+                            <div
                               key={pieza.id}
-                              className="border border-gray-200 p-2 rounded-md"
+                              className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
                             >
-                              {pieza.description} {pieza.references}
-                            </p>
+                              <div className="space-y-2">
+                                <p>
+                                  Codigo:
+                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    {pieza.code}
+                                  </span>
+                                </p>
+
+                                <p>
+                                  Referencia:
+                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                    {pieza.references}{" "}
+                                  </span>
+                                </p>
+                              </div>
+                              <p>
+                                Descripcion:{" "}
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                  {pieza.description}
+                                </span>
+                              </p>
+                            </div>
                           ))}
                         </div>
                       </Accordion.Item>
