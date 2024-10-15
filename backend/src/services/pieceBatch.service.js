@@ -1,5 +1,5 @@
 "use strict";
-import { PieceBatch, Piece } from "../models/index.js";
+import { PieceBatch, Piece, ChemicalTests } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
 
 async function getPieceBatch() {
@@ -8,7 +8,13 @@ async function getPieceBatch() {
       include: [
         {
           model: Piece,
-          as: "pieces", // Alias definido en la relación
+          as: "pieces",
+          include: [
+            {
+              model: ChemicalTests,
+              as: "chemicalTests",
+            },
+          ],
         },
       ],
     });
