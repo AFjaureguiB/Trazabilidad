@@ -1,4 +1,4 @@
-import { Tissue, Piece, PieceBatch } from "../models/index.js";
+import { Tissue, Piece, PieceBatch, ChemicalTests } from "../models/index.js";
 
 export async function existPieceWithCode(code) {
   const pieceCount = await Piece.count({
@@ -68,8 +68,74 @@ async function getPiecesWithoutBatch() {
   }
 }
 
+async function addChemicalTestToPiece(
+  pieceBatchId,
+  sterilizationbatchId,
+  pieceId,
+  chemicalTest
+) {
+  try {
+    const pieceFound = await Piece.findByPk(pieceId);
+    if (!pieceFound) return [null, "La pieza no existe"];
+
+    let chemicalTestAdded;
+
+    if (pieceBatchId) {
+      const chemicalTestAdded = await pieceFound.createChemicalTest({
+        ...chemicalTest,
+        testedAt: new Date(),
+      });
+
+      const pieceBatchFound = await PieceBatch.findByPk(pieceBatchId, {
+        include: [
+          {
+            model: Piece,
+            as: "pieces",
+            include: [
+              {
+                model: ChemicalTests,
+                as: "chemicalTests",
+              },
+            ],
+          },
+        ],
+      });
+
+      if (!pieceBatchFound) return [null, "El lote de piezas no existe"];
+
+      const chemicalTests = pieceBatchFound.pieces.flatMap((p) =>
+        p.chemicalTests.slice(0, 1)
+      );
+
+      // Si alguna prueba es "Reactivo", el estado es "rechazado"
+      const status = chemicalTests.some((test) => test.result === "Reactivo")
+        ? "Rechazado"
+        : chemicalTests.length === 3
+        ? "Pre-Aprobado"
+        : "";
+
+      if (status) {
+        pieceBatchFound.update({ status });
+      }
+
+      return [chemicalTestAdded.toJSON(), null];
+    }
+
+    /*  if (sterilizationbatchId) {
+      chemicalTestAdded = await pieceFound.createChemicalTest({
+        ...chemicalTest,
+        testedAt: new Date(),
+        sterilizationbatchId,
+      });
+    } */
+  } catch (error) {
+    handleError(error, "piece.service -> addChemicalTestToPiece");
+    return [null, "Error al crear la prueba quimica a la pieza"];
+  }
+}
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
+  addChemicalTestToPiece,
 };

@@ -63,8 +63,39 @@ async function getPiecesWithoutBatch(req, res) {
   }
 }
 
+async function addChemicalTestToPiece(req, res) {
+  try {
+    const {
+      pieceBatchId = 0,
+      sterilizationbatchId = 0,
+      pieceId,
+      ...chemicalTest
+    } = req.body;
+
+    //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
+    const [chemicalTestAdded, chemicalTestAddedError] =
+      await PieceService.addChemicalTestToPiece(
+        pieceBatchId,
+        sterilizationbatchId,
+        pieceId,
+        chemicalTest
+      );
+
+    if (chemicalTestAddedError) return respondError(req, res, 404, piecesError);
+
+    if (!chemicalTestAdded)
+      return respondError(req, res, 404, "Error al agregar la prueba quimica");
+
+    respondSuccess(req, res, 200, chemicalTestAdded);
+  } catch (error) {
+    handleError(error, "piece.controller -> addChemicalTestToPiece");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
+  addChemicalTestToPiece,
 };
