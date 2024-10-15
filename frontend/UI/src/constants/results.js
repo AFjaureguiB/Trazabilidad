@@ -10,3 +10,9 @@ export const TissueStatus = {
   ACCEPTED: "ACEPTADO",
   REJECTED: "RECHAZADO",
 };
+
+export const PieceTest = [
+  "Binurden",
+  "Humedad Residual",
+  "Endotoxinas Bacterianas",
+];
