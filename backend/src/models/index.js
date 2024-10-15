@@ -6,6 +6,8 @@ import Tissue from "./tissues.model.js";
 import InfectiousTests from "./Infectioustests.model.js";
 import Piece from "./piece.model.js";
 import PieceBatch from "./piecebatch.model.js";
+import ChemicalTests from "./chemicaltests.model.js";
+import SterilizationBatch from "./sterilizationbatch.model.js";
 
 //Un role lo tienen varios usuarios
 Role.hasMany(User);
@@ -56,6 +58,28 @@ Piece.belongsToMany(PieceBatch, {
   as: "batches",
 });
 
+Piece.hasMany(ChemicalTests, {
+  foreignKey: "pieceId",
+  as: "chemicalTests",
+});
+
+ChemicalTests.belongsTo(Piece, {
+  foreignKey: "pieceId",
+  as: "pieces",
+});
+
+SterilizationBatch.belongsToMany(Piece, {
+  through: "pieces_sterilizationbatch",
+  foreignKey: "sterilizationbatchId",
+  as: "pieces",
+});
+
+Piece.belongsToMany(SterilizationBatch, {
+  through: "pieces_sterilizationbatch",
+  foreignKey: "pieceId",
+  as: "sterilizationBatch",
+});
+
 export {
   User,
   Role,
@@ -65,4 +89,6 @@ export {
   InfectiousTests,
   Piece,
   PieceBatch,
+  SterilizationBatch,
+  ChemicalTests,
 };
