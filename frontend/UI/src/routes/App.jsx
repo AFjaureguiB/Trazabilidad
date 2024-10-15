@@ -20,6 +20,9 @@ function App() {
   if (user.processId === userProcesses.PROCESAMIENTO_TEJIDOS)
     return <Navigate to="/tissue-processing" />;
 
+  if (user.processId === userProcesses.CONTROL_CALIDAD)
+    return <Navigate to="/quality-control" />;
+
   return <p>Pagina principal para un usuario normal</p>;
 }
 

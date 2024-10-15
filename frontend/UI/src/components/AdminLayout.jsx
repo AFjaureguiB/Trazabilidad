@@ -139,6 +139,15 @@ export default function AdminLayout() {
             >
               <p> Info relevante para control de piezas ...</p>
             </LatestData>
+          ) : user.processId === userProcesses.CONTROL_CALIDAD ? (
+            <LatestData
+              title={"Últimos estados de piezas y sus pruebas"}
+              href={"/quality-control"}
+            >
+              <p>
+                Info relevante para control de calidad de producto terminado ...
+              </p>
+            </LatestData>
           ) : (
             <p>Aqui iran las cosas de otro proceso </p>
           )}
