@@ -55,6 +55,10 @@ export default function LoteAccordionHeader({
                   status === "Stand By"
                     ? "bg-indigo-100 text-indigo-800"
                     : status === "Closed"
+                    ? "bg-yellow-100 text-yellow-800"
+                    : status === "Pre-Aprobado"
+                    ? "bg-green-100 text-green-800"
+                    : status === "Rechazado"
                     ? "bg-red-100 text-red-800"
                     : ""
                 }`}

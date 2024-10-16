@@ -211,7 +211,9 @@ export default function TissueProcessing() {
                         </Accordion.Item>
                       ))
                     ) : (
-                      <p>No existen lotes de piezas</p>
+                      <p className="text-xl text-gray-500 font-bold pl-5">
+                        No existen lotes de piezas
+                      </p>
                     )}
                   </Accordion>
                 </div>
