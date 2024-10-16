@@ -20,6 +20,8 @@ import authenticationMiddleware from "../middlewares/authentication.middleware.j
 import pieceRoutes from "./piece.routes.js";
 
 import pieceBatchRoutes from "./pieceBatch.routes.js";
+
+import sterilizationBatchRoutes from "../routes/sterilizationBatch.routes.js";
 /** Instancia del enrutador */
 const router = Router();
 
@@ -38,5 +40,10 @@ router.use("/infectious", authenticationMiddleware, infectiousTestRoutes);
 router.use("/pieces", authenticationMiddleware, pieceRoutes);
 
 router.use("/pieces-batches", authenticationMiddleware, pieceBatchRoutes);
+router.use(
+  "/sterilization-batches",
+  authenticationMiddleware,
+  sterilizationBatchRoutes
+);
 // Exporta el enrutador
 export default router;
