@@ -7,6 +7,7 @@ import UserForm from "../components/UserForm";
 import LatestData from "./LatestData";
 import LatestDonorsInfo from "./LatestDonorsInfo";
 import LatestTissuesTestsInfo from "./LatestTissuesTestsInfo";
+import LatestPiecesInfo from "./LatestPiecesInfo";
 import {
   getUsers,
   deleteUserById,
@@ -137,7 +138,7 @@ export default function AdminLayout() {
               title={"Últimos estados de piezas"}
               href={"/tissue-processing"}
             >
-              <p> Info relevante para control de piezas ...</p>
+              <LatestPiecesInfo />
             </LatestData>
           ) : user.processId === userProcesses.CONTROL_CALIDAD ? (
             <LatestData
