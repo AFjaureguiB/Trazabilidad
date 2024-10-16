@@ -5,6 +5,8 @@ import { PieceTest } from "../constants/results"; // Primeras pruebas que se le 
 import { useEffect } from "react";
 import { addChemicalTestToPiece } from "../services/piece.service";
 import { notifyError, notifySuccess } from "../utils/notifyToast";
+import { useAuth } from "../context/AuthContext";
+import { userRoles } from "../constants/user.roles";
 
 export default function CreatePieceTestForm({
   pieceTestData,
@@ -20,11 +22,13 @@ export default function CreatePieceTestForm({
     reset,
   } = useForm();
 
+  const { user } = useAuth();
   const handleClose = () => {
     setPieceTestData({
       showCreatePieceTest: false,
       pieceId: 0,
       batchId: 0,
+      chemicalTest: undefined,
     });
     reset();
   };
@@ -32,9 +36,16 @@ export default function CreatePieceTestForm({
   useEffect(() => {
     setValue("pieceId", pieceTestData.pieceId);
     setValue("pieceBatchId", pieceTestData.batchId);
+
+    if (pieceTestData.chemicalTest) {
+      setValue("testname", pieceTestData.chemicalTest.testname);
+      setValue("result", pieceTestData.chemicalTest.result);
+      setValue("comment", pieceTestData.chemicalTest.comment);
+    }
   }, [setValue, pieceTestData]);
 
   const onSubmit = async (payload) => {
+    if (pieceTestData.chemicalTest) return; //Se implementara despues la edicion de una prueba XC
     const {
       state,
       data,
@@ -88,12 +99,18 @@ export default function CreatePieceTestForm({
                     required: "Debes seleccionar una prueba",
                   })}
                 >
-                  <option value=""> Selecciona una opción </option>
-                  {filteredPieceTest.map((test) => (
-                    <option key={test} value={test}>
-                      {test}
-                    </option>
-                  ))}
+                  <option value="">Selecciona una opción </option>
+                  {user.role === userRoles.ADMIN
+                    ? PieceTest.map((test) => (
+                        <option key={test} value={test}>
+                          {test}
+                        </option>
+                      ))
+                    : filteredPieceTest.map((test) => (
+                        <option key={test} value={test}>
+                          {test}
+                        </option>
+                      ))}
                 </select>
                 {errors.testname && (
                   <p className="text-red-400 text-sm">
