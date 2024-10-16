@@ -15,6 +15,7 @@ export default function QualityControl() {
   const [pieceTestData, setPieceTestData] = useState({
     showCreatePieceTest: false,
     pieceId: 0,
+    batchId: 0,
   });
 
   const { user } = useAuth();
@@ -55,99 +56,114 @@ export default function QualityControl() {
               </div>
               <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
                 <Accordion allowMultiple>
-                  {piecesBatches.map((batch) => {
-                    const chemicalTests = batch.pieces.flatMap(
-                      (piece) => piece.chemicalTests
-                    );
+                  {piecesBatches ? (
+                    piecesBatches.map((batch) => {
+                      const chemicalTests = batch.pieces.flatMap(
+                        (piece) => piece.chemicalTests
+                      );
 
-                    const allChemicalTestsDone = chemicalTests.length === 3;
-                    return (
-                      <Accordion.Item
-                        key={batch.id}
-                        header={<LoteQualityAccordionHeader />}
-                        batch={batch}
-                        className={
-                          "border border-gray-300 rounded-lg overflow-hidden"
-                        }
-                      >
-                        <div className="space-y-2 mt-2 p-4">
-                          {batch.pieces.map((pieza) => (
-                            <div
-                              key={pieza.id}
-                              className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
-                            >
-                              <div className="space-y-2">
-                                <p>
-                                  Codigo:
-                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    {pieza.code}
-                                  </span>
-                                </p>
+                      const allChemicalTestsDone = chemicalTests.length === 3;
+                      return (
+                        <Accordion.Item
+                          key={batch.id}
+                          header={<LoteQualityAccordionHeader />}
+                          batch={batch}
+                          className={
+                            "border border-gray-300 rounded-lg overflow-hidden"
+                          }
+                        >
+                          <div className="space-y-2 mt-2 p-4">
+                            {batch.pieces.map((pieza) => (
+                              <div
+                                key={pieza.id}
+                                className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
+                              >
+                                <div className="space-y-2">
+                                  <p>
+                                    Codigo:
+                                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {pieza.code}
+                                    </span>
+                                  </p>
 
-                                <p>
-                                  Referencia:
-                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    {pieza.references}{" "}
-                                  </span>
-                                </p>
+                                  <p>
+                                    Referencia:
+                                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {pieza.references}{" "}
+                                    </span>
+                                  </p>
+                                </div>
+                                {pieza.chemicalTests.length !== 0
+                                  ? pieza.chemicalTests.map((chemTest) => (
+                                      <div key={chemTest.id}>
+                                        <p>
+                                          Prueba Quimica:
+                                          <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                            {chemTest.testname}
+                                          </span>
+                                        </p>
+                                        <p>
+                                          Resultado:
+                                          <span
+                                            className={`text-xs font-medium px-2.5 py-0.5 rounded ${
+                                              chemTest.result === "No Reactivo"
+                                                ? "bg-indigo-100 text-indigo-800"
+                                                : chemTest.result === "Reactivo"
+                                                ? "bg-red-100 text-red-800"
+                                                : ""
+                                            }`}
+                                          >
+                                            {chemTest.result}
+                                          </span>
+                                        </p>
+                                      </div>
+                                    ))
+                                  : null}
+                                <div className="flex flex-col items-end">
+                                  <p>
+                                    Descripcion:{" "}
+                                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {pieza.description}
+                                    </span>
+                                  </p>
+                                  <button
+                                    className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
+                                    title="Agregar resultados"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      setPieceTestData({
+                                        showCreatePieceTest: true,
+                                        pieceId: pieza.id,
+                                        batchId: batch.id,
+                                      });
+                                    }}
+                                  >
+                                    {userRoles.ADMIN === user.role ? (
+                                      <div className="flex items-center gap-2">
+                                        <Pencil />
+                                        <span>Editar resultados</span>
+                                      </div>
+                                    ) : pieza.chemicalTests.length === 0 &&
+                                      !allChemicalTestsDone &&
+                                      batch.status !== "Rechazado" ? (
+                                      <div className="flex items-center gap-2">
+                                        <Pencil />
+                                        <span>Agregar resultados</span>
+                                      </div>
+                                    ) : null}
+                                  </button>
+                                </div>
                               </div>
-                              {pieza.chemicalTests.length !== 0
-                                ? pieza.chemicalTests.map((chemTest) => (
-                                    <div key={chemTest.id}>
-                                      <p>
-                                        Prueba Quimica:
-                                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                          {chemTest.testname}
-                                        </span>
-                                      </p>
-                                      <p>
-                                        Resultado:
-                                        <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                          {chemTest.result}
-                                        </span>
-                                      </p>
-                                    </div>
-                                  ))
-                                : null}
-                              <div className="flex flex-col items-end">
-                                <p>
-                                  Descripcion:{" "}
-                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    {pieza.description}
-                                  </span>
-                                </p>
-                                <button
-                                  className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
-                                  title="Agregar resultados"
-                                  onClick={(e) => {
-                                    e.stopPropagation();
-                                    setPieceTestData({
-                                      showCreatePieceTest: true,
-                                      pieceId: pieza.id,
-                                      batchId: batch.id,
-                                    });
-                                  }}
-                                >
-                                  {userRoles.ADMIN === user.role ? (
-                                    <div className="flex items-center gap-2">
-                                      <Pencil />
-                                      <span>Editar resultados</span>
-                                    </div>
-                                  ) : pieza.chemicalTests.length === 0 &&
-                                    !allChemicalTestsDone ? (
-                                    <div className="flex items-center gap-2">
-                                      <Pencil />
-                                      <span>Agregar resultados</span>
-                                    </div>
-                                  ) : null}
-                                </button>
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      </Accordion.Item>
-                    );
-                  })}
+                            ))}
+                          </div>
+                        </Accordion.Item>
+                      );
+                    })
+                  ) : (
+                    <p className="text-xl text-gray-500 font-bold pl-5">
+                      No tenemos lotes de piezas ...
+                    </p>
+                  )}
                 </Accordion>
               </div>
             </div>
@@ -160,6 +176,8 @@ export default function QualityControl() {
       <CreatePieceTestForm
         pieceTestData={pieceTestData}
         setPieceTestData={setPieceTestData}
+        fetchPiecesBatches={fetchPiecesBatches}
+        piecesBatches={piecesBatches}
       />
     </>
   );

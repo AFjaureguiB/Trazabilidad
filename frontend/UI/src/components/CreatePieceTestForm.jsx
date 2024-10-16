@@ -3,10 +3,14 @@ import { useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { PieceTest } from "../constants/results"; // Primeras pruebas que se le hacen a una pieza
 import { useEffect } from "react";
+import { addChemicalTestToPiece } from "../services/piece.service";
+import { notifyError, notifySuccess } from "../utils/notifyToast";
 
 export default function CreatePieceTestForm({
   pieceTestData,
   setPieceTestData,
+  fetchPiecesBatches,
+  piecesBatches,
 }) {
   const {
     register,
@@ -27,12 +31,44 @@ export default function CreatePieceTestForm({
 
   useEffect(() => {
     setValue("pieceId", pieceTestData.pieceId);
-    setValue("batchId", pieceTestData.batchId);
+    setValue("pieceBatchId", pieceTestData.batchId);
   }, [setValue, pieceTestData]);
 
   const onSubmit = async (payload) => {
-    console.log(payload);
+    const {
+      state,
+      data,
+      details: detailsError,
+      message: messageError,
+    } = await addChemicalTestToPiece(payload);
+
+    if (state === "Error") {
+      notifyError(messageError);
+    }
+
+    if (state == "Success") {
+      const message = `Prueba quimica: ${data.testname}  creada con exito, resultado: ${data.result}`;
+
+      notifySuccess(message);
+      handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
+      fetchPiecesBatches();
+    }
   };
+
+  const currentPiecesBatch = piecesBatches.find(
+    (batch) => batch.id === pieceTestData.batchId
+  );
+
+  const chemicalTests = currentPiecesBatch?.pieces.flatMap(
+    (piece) => piece.chemicalTests
+  );
+  const chemicalTestsNames = chemicalTests?.map(
+    (chemTest) => chemTest.testname
+  );
+
+  const filteredPieceTest = PieceTest.filter(
+    (test) => !chemicalTestsNames?.includes(test)
+  );
 
   return (
     <Modal
@@ -48,19 +84,21 @@ export default function CreatePieceTestForm({
                 <label>Pruebas</label>
                 <select
                   className="bg-neutral-700 text-neutral-400 text-sm rounded-lg focus:outline-none focus:ring-4  block w-full p-2.5 focus:ring-slate-500"
-                  {...register("test", {
+                  {...register("testname", {
                     required: "Debes seleccionar una prueba",
                   })}
                 >
                   <option value=""> Selecciona una opción </option>
-                  {PieceTest.map((test) => (
+                  {filteredPieceTest.map((test) => (
                     <option key={test} value={test}>
                       {test}
                     </option>
                   ))}
                 </select>
-                {errors.test && (
-                  <p className="text-red-400 text-sm">{errors.test.message}</p>
+                {errors.testname && (
+                  <p className="text-red-400 text-sm">
+                    {errors.testname.message}
+                  </p>
                 )}
               </div>
               <div className="space-y-2">
