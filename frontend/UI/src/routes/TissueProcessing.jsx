@@ -166,49 +166,53 @@ export default function TissueProcessing() {
                 </div>
                 <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
                   <Accordion allowMultiple>
-                    {piecesBatches.map((batch) => (
-                      <Accordion.Item
-                        key={batch.id}
-                        header={<LoteAccordionHeader />}
-                        batch={batch}
-                        setBatchData={setBatchData}
-                        className={
-                          "border border-gray-300 rounded-lg overflow-hidden"
-                        }
-                        closePieceBatch={closePieceBatch}
-                      >
-                        <div className="space-y-2 mt-2 p-4">
-                          {batch.pieces.map((pieza) => (
-                            <div
-                              key={pieza.id}
-                              className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
-                            >
-                              <div className="space-y-2">
-                                <p>
-                                  Codigo:
-                                  <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    {pieza.code}
-                                  </span>
-                                </p>
+                    {piecesBatches ? (
+                      piecesBatches.map((batch) => (
+                        <Accordion.Item
+                          key={batch.id}
+                          header={<LoteAccordionHeader />}
+                          batch={batch}
+                          setBatchData={setBatchData}
+                          className={
+                            "border border-gray-300 rounded-lg overflow-hidden"
+                          }
+                          closePieceBatch={closePieceBatch}
+                        >
+                          <div className="space-y-2 mt-2 p-4">
+                            {batch.pieces.map((pieza) => (
+                              <div
+                                key={pieza.id}
+                                className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
+                              >
+                                <div className="space-y-2">
+                                  <p>
+                                    Codigo:
+                                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {pieza.code}
+                                    </span>
+                                  </p>
 
+                                  <p>
+                                    Referencia:
+                                    <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                      {pieza.references}{" "}
+                                    </span>
+                                  </p>
+                                </div>
                                 <p>
-                                  Referencia:
+                                  Descripcion:{" "}
                                   <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                    {pieza.references}{" "}
+                                    {pieza.description}
                                   </span>
                                 </p>
                               </div>
-                              <p>
-                                Descripcion:{" "}
-                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                                  {pieza.description}
-                                </span>
-                              </p>
-                            </div>
-                          ))}
-                        </div>
-                      </Accordion.Item>
-                    ))}
+                            ))}
+                          </div>
+                        </Accordion.Item>
+                      ))
+                    ) : (
+                      <p>No existen lotes de piezas</p>
+                    )}
                   </Accordion>
                 </div>
               </div>
