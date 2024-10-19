@@ -15,6 +15,7 @@ import {
   updateUser,
 } from "../services/user.service";
 import { userProcesses } from "../constants/user.processes";
+import LatestSterilizationBatchInfo from "./LatestSterilizationBatchInfo";
 
 export default function AdminLayout() {
   const [users, setUsers] = useState([]);
@@ -142,12 +143,10 @@ export default function AdminLayout() {
             </LatestData>
           ) : user.processId === userProcesses.CONTROL_CALIDAD ? (
             <LatestData
-              title={"Últimos estados de piezas y sus pruebas"}
+              title={"Últimos Lotes de Esterilizacion"}
               href={"/quality-control"}
             >
-              <p>
-                Info relevante para control de calidad de producto terminado ...
-              </p>
+              <LatestSterilizationBatchInfo />
             </LatestData>
           ) : (
             <p>Aqui iran las cosas de otro proceso </p>
