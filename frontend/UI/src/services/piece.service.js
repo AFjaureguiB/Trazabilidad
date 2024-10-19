@@ -85,11 +85,33 @@ export const addChemicalTestToPiece = async (payload) => {
     if (!newPayload.comment) {
       delete newPayload.comment;
     }
-    const response = await axios.post("/pieces/add-chemical-test", newPayload, {
+
+    const response = await axios.post("/pieces/chemical-test", newPayload, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
+
+export const updateChemicalTest = async (payload) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    console.log(payload);
+
+    const response = await axios.put("/pieces/chemical-test", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
     const { status, data } = response;
     if (status === 200) return data;
   } catch (error) {

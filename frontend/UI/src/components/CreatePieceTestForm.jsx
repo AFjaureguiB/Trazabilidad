@@ -3,7 +3,10 @@ import { useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { PieceTest } from "../constants/results"; // Primeras pruebas que se le hacen a una pieza
 import { useEffect } from "react";
-import { addChemicalTestToPiece } from "../services/piece.service";
+import {
+  addChemicalTestToPiece,
+  updateChemicalTest,
+} from "../services/piece.service";
 import { notifyError, notifySuccess } from "../utils/notifyToast";
 import { useAuth } from "../context/AuthContext";
 import { userRoles } from "../constants/user.roles";
@@ -38,6 +41,7 @@ export default function CreatePieceTestForm({
     setValue("pieceBatchId", pieceTestData.batchId);
 
     if (pieceTestData.chemicalTest) {
+      setValue("id", pieceTestData.chemicalTest.id);
       setValue("testname", pieceTestData.chemicalTest.testname);
       setValue("result", pieceTestData.chemicalTest.result);
       setValue("comment", pieceTestData.chemicalTest.comment);
@@ -45,20 +49,23 @@ export default function CreatePieceTestForm({
   }, [setValue, pieceTestData]);
 
   const onSubmit = async (payload) => {
-    if (pieceTestData.chemicalTest) return; //Se implementara despues la edicion de una prueba XC
     const {
       state,
       data,
       details: detailsError,
       message: messageError,
-    } = await addChemicalTestToPiece(payload);
+    } = pieceTestData.chemicalTest
+      ? await updateChemicalTest(payload)
+      : await addChemicalTestToPiece(payload);
 
     if (state === "Error") {
       notifyError(messageError);
     }
 
     if (state == "Success") {
-      const message = `Prueba quimica: ${data.testname}  creada con exito, resultado: ${data.result}`;
+      const message = `Prueba quimica: ${data.testname}  ${
+        !pieceTestData.chemicalTest ? "creada" : "actualizada"
+      } con exito, resultado: ${data.result}`;
 
       notifySuccess(message);
       handleClose(); //Reiniciamos los controles de formulario y cerramos el modal
@@ -69,7 +76,6 @@ export default function CreatePieceTestForm({
   const currentPiecesBatch = piecesBatches.find(
     (batch) => batch.id === pieceTestData.batchId
   );
-
   const chemicalTests = currentPiecesBatch?.pieces.flatMap(
     (piece) => piece.chemicalTests
   );
@@ -83,7 +89,9 @@ export default function CreatePieceTestForm({
 
   return (
     <Modal
-      title={"Agregar prueba"}
+      title={
+        !pieceTestData.chemicalTest ? "Agregar Prueba" : "Actualizar Prueba"
+      }
       showModal={pieceTestData.showCreatePieceTest}
       handleClose={handleClose}
     >
@@ -91,6 +99,31 @@ export default function CreatePieceTestForm({
         <form className="space-y-4" onSubmit={handleSubmit(onSubmit)}>
           <div className=" text-gray-100 space-y-4">
             <div className="space-y-4">
+              {user.role === userRoles.ADMIN ? (
+                <div className="space-y-4">
+                  <label>Pieza a la que se le realizo la prueba</label>
+                  <select
+                    className="bg-neutral-700 text-neutral-400 text-sm rounded-lg focus:outline-none focus:ring-4  block w-full p-2.5 focus:ring-slate-500"
+                    {...register("pieceId", {
+                      required: "Debes seleccionar una pieza",
+                    })}
+                  >
+                    <option value="">Selecciona una opción </option>
+                    {currentPiecesBatch &&
+                      currentPiecesBatch.pieces.map((piece) => (
+                        <option key={piece.id} value={piece.id}>
+                          {piece.code} - {piece.references} -{" "}
+                          {piece.description}
+                        </option>
+                      ))}
+                  </select>
+                  {errors.pieceId && (
+                    <p className="text-red-400 text-sm">
+                      {errors.pieceId.message}
+                    </p>
+                  )}
+                </div>
+              ) : null}
               <div className="space-y-4">
                 <label>Pruebas</label>
                 <select

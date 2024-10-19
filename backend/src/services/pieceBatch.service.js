@@ -115,11 +115,9 @@ export async function updatePieceBatchStatusAccordingChemicalTests(
       : chemicalTests.length === 3 &&
         chemicalTests.every((test) => test.result === "No Reactivo")
       ? "Pre-Aprobado"
-      : "";
+      : "Stand By";
 
-    if (status) {
-      pieceBatchFound.update({ status });
-    }
+    await pieceBatchFound.update({ status });
   } catch (error) {
     handleError(
       error,
