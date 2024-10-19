@@ -1,4 +1,5 @@
 import { Tissue, Piece, PieceBatch, ChemicalTests } from "../models/index.js";
+import { updatePieceBatchStatusAccordingChemicalTests } from "./pieceBatch.service.js";
 
 export async function existPieceWithCode(code) {
   const pieceCount = await Piece.count({
@@ -133,9 +134,35 @@ async function addChemicalTestToPiece(
     return [null, "Error al crear la prueba quimica a la pieza"];
   }
 }
+
+//This should be in another file, p. ej. chemicasTest.services.js
+async function updateChemicalTest(
+  pieceBatchId,
+  sterilizationbatchId,
+  chemicalTestId,
+  chemicalTest
+) {
+  try {
+    const chemicalTestFound = await ChemicalTests.findByPk(chemicalTestId);
+    if (!chemicalTestFound) return [null, "La prueba quimica no existe"];
+
+    await chemicalTestFound.update(chemicalTest);
+    await chemicalTestFound.reload();
+    
+    if (pieceBatchId)
+      await updatePieceBatchStatusAccordingChemicalTests(pieceBatchId);
+
+    return [chemicalTestFound.toJSON(), null];
+  } catch (error) {
+    handleError(error, "piece.service -> updateChemicalTest");
+    return [null, "Error al actualizar la prueba quimica a la pieza"];
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
   addChemicalTestToPiece,
+  updateChemicalTest,
 };

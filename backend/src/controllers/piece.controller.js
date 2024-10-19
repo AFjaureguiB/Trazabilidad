@@ -81,7 +81,8 @@ async function addChemicalTestToPiece(req, res) {
         chemicalTest
       );
 
-    if (chemicalTestAddedError) return respondError(req, res, 404, piecesError);
+    if (chemicalTestAddedError)
+      return respondError(req, res, 404, chemicalTestAddedError);
 
     if (!chemicalTestAdded)
       return respondError(req, res, 404, "Error al agregar la prueba quimica");
@@ -93,9 +94,45 @@ async function addChemicalTestToPiece(req, res) {
   }
 }
 
+async function updateChemicalTest(req, res) {
+  try {
+    const {
+      pieceBatchId = 0,
+      sterilizationbatchId = 0,
+      id, //chemicalTestId
+      ...chemicalTest
+    } = req.body;
+
+    const [chemicalTestUpdated, chemicalTestUpdatedError] =
+      await PieceService.updateChemicalTest(
+        pieceBatchId,
+        sterilizationbatchId,
+        id,
+        chemicalTest
+      );
+
+    if (chemicalTestUpdatedError)
+      return respondError(req, res, 404, chemicalTestUpdatedError);
+
+    if (!chemicalTestUpdated)
+      return respondError(
+        req,
+        res,
+        404,
+        "Error al actualizar la prueba quimica"
+      );
+
+    respondSuccess(req, res, 200, chemicalTestUpdated);
+  } catch (error) {
+    handleError(error, "piece.controller -> addChemicalTestToPiece");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
   addChemicalTestToPiece,
+  updateChemicalTest,
 };

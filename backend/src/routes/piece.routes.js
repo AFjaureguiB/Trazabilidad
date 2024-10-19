@@ -12,6 +12,7 @@ const router = Router();
 router.get("/withoutbatch", PieceController.getPiecesWithoutBatch);
 router.post("/", PieceController.savePiece);
 router.put("/", isAdmin, PieceController.updatePiece);
-router.post("/add-chemical-test", PieceController.addChemicalTestToPiece);
+router.post("/chemical-test", PieceController.addChemicalTestToPiece);
+router.put("/chemical-test", isAdmin, PieceController.updateChemicalTest);
 
 export default router;
