@@ -84,6 +84,50 @@ async function updatePieceBatch(id, pieceBatchData) {
   }
 }
 
+export async function updatePieceBatchStatusAccordingChemicalTests(
+  pieceBatchId
+) {
+  try {
+    const pieceBatchFound = await PieceBatch.findByPk(pieceBatchId, {
+      include: [
+        {
+          model: Piece,
+          as: "pieces",
+          include: [
+            {
+              model: ChemicalTests,
+              as: "chemicalTests",
+            },
+          ],
+        },
+      ],
+    });
+
+    if (!pieceBatchFound) throw new Error("El lote de piezas no existe");
+
+    const chemicalTests = pieceBatchFound.pieces.flatMap((p) =>
+      p.chemicalTests.slice(0, 1)
+    );
+
+    // Si alguna prueba es "Reactivo", el estado es "rechazado"
+    const status = chemicalTests.some((test) => test.result === "Reactivo")
+      ? "Rechazado"
+      : chemicalTests.length === 3 &&
+        chemicalTests.every((test) => test.result === "No Reactivo")
+      ? "Pre-Aprobado"
+      : "";
+
+    if (status) {
+      pieceBatchFound.update({ status });
+    }
+  } catch (error) {
+    handleError(
+      error,
+      "pieceBatch.service -> updatePieceBatchStatusAccordingChemicalTests"
+    );
+  }
+}
+
 export default {
   savePieceBatch,
   getPieceBatch,
