@@ -1,9 +1,17 @@
+import { userRoles } from "../constants/user.roles";
+import { useAuth } from "../context/AuthContext";
 import Chevron from "./icons/Chevron";
+import Pencil from "./icons/Pencil";
 
 /* eslint-disable react/prop-types */
-export default function LoteQualityAccordionHeader({ isActive, batch }) {
+export default function LoteQualityAccordionHeader({
+  isActive,
+  batch,
+  setBatchData,
+}) {
   const { id: batchNumber, startdate, enddate, status, pieces } = batch;
   const totalPieces = pieces.length;
+  const { user } = useAuth();
 
   return (
     <div className={`${isActive ? "border-b border-gray-300" : ""}`}>
@@ -63,7 +71,24 @@ export default function LoteQualityAccordionHeader({ isActive, batch }) {
             </span>
           </p>
         </div>
-
+        {user.role === userRoles.ADMIN && setBatchData ? (
+          <div>
+            <button
+              className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                const { pieces, ...batchData } = batch;
+                setBatchData({
+                  showCreateStBatch: true,
+                  stBatch: batchData,
+                });
+              }}
+            >
+              <Pencil className={"size-5"} />
+              <span>Editar Lote</span>
+            </button>
+          </div>
+        ) : null}
         <div className="px-6 py-4">
           <div>
             <Chevron className={`size-6 ${isActive ? "rotate-180" : ""}`} />

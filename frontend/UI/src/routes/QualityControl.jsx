@@ -324,6 +324,7 @@ export default function QualityControl() {
                           key={batch.id}
                           header={<LoteQualityAccordionHeader />}
                           batch={batch}
+                          setBatchData={setBatchData}
                           className={
                             "border border-gray-300 rounded-lg overflow-hidden"
                           }
