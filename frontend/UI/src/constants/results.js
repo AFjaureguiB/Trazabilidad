@@ -16,3 +16,8 @@ export const PieceTest = [
   "Humedad Residual",
   "Endotoxinas Bacterianas",
 ];
+
+export const SterilizationPieceTest = [
+  "Pruebas de esterilidad",
+  "Trazas de óxido de etileno",
+];
