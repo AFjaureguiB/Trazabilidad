@@ -9,6 +9,8 @@ import LoteQualityAccordionHeader from "../components/LoteQualityAccordionHeader
 import Pencil from "../components/icons/Pencil.jsx";
 import CreatePieceTestForm from "../components/CreatePieceTestForm.jsx";
 import { getSterilizationBatches } from "../services/sterilizationBatch.service.js";
+import Plus from "../components/icons/Plus.jsx";
+import CreateSterilizationBatchFrom from "../components/CreateSterilizationBatchFrom.jsx";
 
 export default function QualityControl() {
   const [piecesBatches, setPiecesBatches] = useState([]);
@@ -19,6 +21,11 @@ export default function QualityControl() {
     pieceId: 0,
     batchId: 0,
     chemicalTest: undefined,
+  });
+
+  const [batchData, setBatchData] = useState({
+    showCreateStBatch: false,
+    stBatch: undefined,
   });
 
   const { user } = useAuth();
@@ -288,15 +295,31 @@ export default function QualityControl() {
                 </div>
               </div>
               <div className="w-1/2">
-                <div className="my-4">
+                <div className="my-4 flex justify-between items-center">
                   <h6 className="text-xl text-gray-500 font-bold py-2">
                     Lotes de Esterilizacion
                   </h6>
+                  <div>
+                    {user.role === userRoles.ASSISTANT ? (
+                      <button
+                        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-3 py-2 flex gap-2 items-center"
+                        onClick={() =>
+                          setBatchData({
+                            showCreateStBatch: true,
+                            stBatch: undefined,
+                          })
+                        }
+                      >
+                        <Plus className={"size-6"} />
+                        Nuevo Lote
+                      </button>
+                    ) : null}
+                  </div>
                 </div>
                 <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
-                  <Accordion allowMultiple>
-                    {sterilizationBatches ? (
-                      sterilizationBatches.map((batch) => (
+                  {sterilizationBatches ? (
+                    <Accordion allowMultiple>
+                      {sterilizationBatches.map((batch) => (
                         <Accordion.Item
                           key={batch.id}
                           header={<LoteQualityAccordionHeader />}
@@ -364,13 +387,13 @@ export default function QualityControl() {
                             ))}
                           </div>
                         </Accordion.Item>
-                      ))
-                    ) : (
-                      <p className="text-xl text-gray-500 font-bold pl-5">
-                        No existen lotes pre-aprobados de piezas
-                      </p>
-                    )}
-                  </Accordion>
+                      ))}
+                    </Accordion>
+                  ) : (
+                    <p className="text-xl text-gray-500 font-bold pl-5">
+                      No existen lotes pre-aprobados de piezas
+                    </p>
+                  )}
                 </div>
               </div>
             </div>
@@ -382,6 +405,11 @@ export default function QualityControl() {
         setPieceTestData={setPieceTestData}
         fetchPiecesBatches={fetchPiecesBatches}
         piecesBatches={piecesBatches}
+      />
+      <CreateSterilizationBatchFrom
+        batchData={batchData}
+        setBatchData={setBatchData}
+        fetchSterilizationBatches={fetchSterilizationBatches}
       />
     </>
   );

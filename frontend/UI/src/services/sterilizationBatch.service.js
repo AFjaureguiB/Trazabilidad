@@ -19,3 +19,22 @@ export const getSterilizationBatches = async () => {
     return error.response.data;
   }
 };
+
+export const createSterilizationBatch = async (payload) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.post("/sterilization-batches", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 201) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
