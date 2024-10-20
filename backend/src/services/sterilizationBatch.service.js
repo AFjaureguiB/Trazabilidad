@@ -122,7 +122,27 @@ async function getSterilizationBatches() {
   }
 }
 
+async function updateSterilizationBatch(id, sterilizationBatchData) {
+  try {
+    const sterilizationBatchFound = await SterilizationBatch.findByPk(id);
+
+    if (!sterilizationBatchFound) return [null, "El lote no existe"];
+
+    await sterilizationBatchFound.update(sterilizationBatchData);
+    await sterilizationBatchFound.reload();
+
+    return [sterilizationBatchFound.toJSON(), null];
+  } catch (error) {
+    handleError(
+      error,
+      "sterilizationBatch.service -> updateSterilizationBatch"
+    );
+
+    return [null, "Error al actualizar el lote de piezas"];
+  }
+}
 export default {
   getSterilizationBatches,
   createSterilizationBatch,
+  updateSterilizationBatch,
 };

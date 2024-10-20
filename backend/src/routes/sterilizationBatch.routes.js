@@ -9,5 +9,6 @@ const router = Router();
 
 router.get("/", sterilizationBatchController.getSterilizationBatches);
 router.post("/", sterilizationBatchController.createSterilizationBatch);
+router.put("/", sterilizationBatchController.updateSterilizationBatch);
 
 export default router;

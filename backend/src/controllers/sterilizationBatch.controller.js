@@ -57,7 +57,32 @@ async function getSterilizationBatches(req, res) {
   }
 }
 
+async function updateSterilizationBatch(req, res) {
+  try {
+    const { id, ...sterilizationBatchData } = req.body;
+    //TODO: Validar con un schema de Joi o Zod el cuerpo de la request
+
+    const [updatedsterilizationBatch, updatedsterilizationBatchError] =
+      await sterilizationBatchService.updateSterilizationBatch(
+        id,
+        sterilizationBatchData
+      );
+
+    if (updatedsterilizationBatchError)
+      return respondError(req, res, 400, updatedsterilizationBatchError);
+
+    respondSuccess(req, res, 200, updatedsterilizationBatch);
+  } catch (error) {
+    handleError(
+      error,
+      "sterilizationBatch.controller -> updateSterilizationBatch"
+    );
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   getSterilizationBatches,
   createSterilizationBatch,
+  updateSterilizationBatch,
 };
