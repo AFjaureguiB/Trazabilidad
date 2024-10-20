@@ -52,6 +52,7 @@ export default function CreatePieceTestSterilizationForm({
 
   const onSubmit = async (payload) => {
     console.log(payload);
+
     const {
       state,
       data,

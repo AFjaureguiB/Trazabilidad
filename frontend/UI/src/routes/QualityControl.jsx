@@ -333,8 +333,7 @@ export default function QualityControl() {
                         );
                         const allSterilizationTestsDone =
                           chemicalTests.length === 11;
-                        console.log(chemicalTests.length);
-                        console.log(allSterilizationTestsDone);
+
                         return (
                           <Accordion.Item
                             key={batch.id}
@@ -414,14 +413,12 @@ export default function QualityControl() {
                                         if (userRoles.ADMIN === user.role) {
                                           const [chemicalTest] =
                                             pieza.chemicalTests;
-                                          console.log("Soy admin !!!");
-                                          console.log(chemicalTest);
-                                          /* setPieceTestData({
-                                            showCreatePieceTest: true,
+                                          setPieceTestSterilizationData({
+                                            showCreatePieceTestSte: true,
                                             pieceId: pieza.id,
-                                            batchId: batch.id,
+                                            steBatchId: batch.id,
                                             chemicalTest,
-                                          }); */
+                                          });
                                         } else {
                                           setPieceTestSterilizationData({
                                             showCreatePieceTestSte: true,
@@ -433,7 +430,9 @@ export default function QualityControl() {
                                       }}
                                     >
                                       {userRoles.ADMIN === user.role &&
-                                      pieza.chemicalTests.length !== 0 ? (
+                                      pieza.chemicalTests.length !== 0 &&
+                                      pieza.chemicalTests[0]
+                                        .sterilizationbatchId ? (
                                         <div className="flex items-center gap-2">
                                           <Pencil />
                                           <span>Editar resultados</span>
