@@ -8,4 +8,6 @@ import sterilizationBatchController from "../controllers/sterilizationBatch.cont
 const router = Router();
 
 router.get("/", sterilizationBatchController.getSterilizationBatches);
+router.post("/", sterilizationBatchController.createSterilizationBatch);
+
 export default router;
