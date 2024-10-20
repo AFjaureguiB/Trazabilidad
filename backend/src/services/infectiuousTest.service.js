@@ -1,9 +1,11 @@
-"use strict";
+import { getLogs } from "../services/logInfo.service.js";
+import { logUserActivity } from "../services/logger.service.js"; // Importa la función para loguear actividad
 import { InfectiousTests, Tissue } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
 import { TissueStatus } from "../constants/TissueStatus.js";
+import compareAndLogChanges from "../utils/compareChanges.js";
 
-async function updateInfectiousTest(testId, testData) {
+async function updateInfectiousTest(testId, testData, user) {
   try {
     const { tissueId, ...infectiousTestData } = testData;
 
@@ -24,45 +26,34 @@ async function updateInfectiousTest(testId, testData) {
 
     if (!infectiousTestFound) return [null, "La prueba infecciosa no existe"];
 
-    //Actualizamos la informacion de la prueba en cuestion.
+    // Guardamos los datos previos para comparación
+    const previousData = infectiousTestFound.toJSON();
+
+    // Actualizamos la información de la prueba en cuestión
     await infectiousTestFound.update(infectiousTestData);
     await infectiousTestFound.reload();
     await tissueFound.reload();
 
-    /**
-     * Un tejido puede tener los siguientes estados:
-     * 1) `CUARENTENA`, el estado por defecto cuando se crea un Tissue y sus respectivas pruebas infecciosas, no hay nada que hacer con este estado, es el inicial.
-     * 2) `EN PRUEBAS`, cuando al menos un registro de pruebas infecciosas tiene un valor en `result` distinto de `No Realizado`
-     * 3) `RECHAZADO`, cuando al menos un registro de pruebas  infecciosas tiene un valor en `result` igual a `Reactivo`
-     * 4) `ACEPTADO`, cuando todos los registros de pruebas infecciosas tienen un valor en `result` igual a `No Reactivo`
-     */
-
-    //2)`EN PRUEBAS`
+    // Lógica de estado de tejido
     const inTesting = tissueFound.infectiousTests.some(
-      (test) => test.result !== "No Realizado" && test.result !== "Reactivo" //tambien podriamos usar `test.result === "No Reactivo"`
+      (test) => test.result !== "No Realizado" && test.result !== "Reactivo"
     )
       ? TissueStatus.IN_TESTING
       : "";
 
-    //3) `RECHAZADO`
     const rejected = tissueFound.infectiousTests.some(
       (test) => test.result === "Reactivo"
     )
       ? TissueStatus.REJECTED
       : "";
 
-    //4) `ACEPTADO`
     const accepted = tissueFound.infectiousTests.every(
       (test) => test.result === "No Reactivo"
     )
       ? TissueStatus.ACCEPTED
       : "";
 
-    console.log("inTesting---->", inTesting);
-    console.log("rejected---->", rejected);
-    console.log("accepted---->", accepted);
-
-    //logica para actualizar el `status` del tejido
+    // Lógica para actualizar el `status` del tejido
     if (inTesting) {
       await tissueFound.update({ status: TissueStatus.IN_TESTING });
     }
@@ -75,9 +66,23 @@ async function updateInfectiousTest(testId, testData) {
       await tissueFound.update({ status: TissueStatus.ACCEPTED });
     }
 
-    return [infectiousTestFound.toJSON(), null];
+    // Comparar y loguear cambios
+    const updatedData = infectiousTestFound.toJSON();
+    const changes = compareAndLogChanges(previousData, updatedData);
+
+    // Loguear la actividad del usuario
+    logUserActivity(
+      user.username, // Suponiendo que `user` tiene una propiedad `username`
+      user.role, // El rol del usuario
+      "Infectious Tests", // Proceso
+      `PUT /api/infectiousTests/${testId}`, // Acción
+      changes // Datos actualizados
+    );
+
+    return [infectiousTestFound.toJSON(), null, updatedData];
   } catch (error) {
-    handleError(error, "infectiuousTest.service -> updateInfectiousTest");
+    handleError(error, "infectiousTest.service -> updateInfectiousTest");
+    return [null, error.message];
   }
 }
 
