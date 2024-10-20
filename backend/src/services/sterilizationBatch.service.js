@@ -141,6 +141,50 @@ async function updateSterilizationBatch(id, sterilizationBatchData) {
     return [null, "Error al actualizar el lote de piezas"];
   }
 }
+
+export async function updateSterilizationBatchStatusAccordingChemicalTests(
+  sterilizationbatchId
+) {
+  try {
+    const sterilizationBatchFound = await SterilizationBatch.findByPk(
+      sterilizationbatchId,
+      {
+        include: [
+          {
+            model: Piece,
+            as: "pieces",
+            include: [
+              {
+                model: ChemicalTests,
+                as: "chemicalTests",
+              },
+            ],
+          },
+        ],
+      }
+    );
+    if (!sterilizationBatchFound)
+      return [null, "El lote de esterilizacion no existe"];
+
+    const chemicalTests = sterilizationBatchFound.pieces.flatMap((p) =>
+      p.chemicalTests.slice(0, 1)
+    );
+
+    // Si alguna prueba es "Reactivo", el estado es "rechazado"
+    const status = chemicalTests.some((test) => test.result === "Reactivo")
+      ? "Rechazado"
+      : chemicalTests.length === 11
+      ? "Aprobado"
+      : "Stand By";
+
+    await sterilizationBatchFound.update({ status });
+  } catch (error) {
+    handleError(
+      error,
+      "sterilizationBatch.service -> updateSterilizationBatchStatusAccordingChemicalTests"
+    );
+  }
+}
 export default {
   getSterilizationBatches,
   createSterilizationBatch,

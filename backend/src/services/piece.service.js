@@ -6,6 +6,7 @@ import {
   SterilizationBatch,
 } from "../models/index.js";
 import { updatePieceBatchStatusAccordingChemicalTests } from "./pieceBatch.service.js";
+import { updateSterilizationBatchStatusAccordingChemicalTests } from "./sterilizationBatch.service.js";
 
 export async function existPieceWithCode(code) {
   const pieceCount = await Piece.count({
@@ -192,6 +193,11 @@ async function updateChemicalTest(
 
     if (pieceBatchId)
       await updatePieceBatchStatusAccordingChemicalTests(pieceBatchId);
+
+    if (sterilizationbatchId)
+      await updateSterilizationBatchStatusAccordingChemicalTests(
+        sterilizationbatchId
+      );
 
     return [chemicalTestFound.toJSON(), null];
   } catch (error) {
