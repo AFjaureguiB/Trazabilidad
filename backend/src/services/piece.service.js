@@ -1,4 +1,10 @@
-import { Tissue, Piece, PieceBatch, ChemicalTests } from "../models/index.js";
+import {
+  Tissue,
+  Piece,
+  PieceBatch,
+  ChemicalTests,
+  SterilizationBatch,
+} from "../models/index.js";
 import { updatePieceBatchStatusAccordingChemicalTests } from "./pieceBatch.service.js";
 
 export async function existPieceWithCode(code) {
@@ -79,8 +85,6 @@ async function addChemicalTestToPiece(
     const pieceFound = await Piece.findByPk(pieceId);
     if (!pieceFound) return [null, "La pieza no existe"];
 
-    let chemicalTestAdded;
-
     if (pieceBatchId) {
       const chemicalTestAdded = await pieceFound.createChemicalTest({
         ...chemicalTest,
@@ -122,13 +126,50 @@ async function addChemicalTestToPiece(
       return [chemicalTestAdded.toJSON(), null];
     }
 
-    /*  if (sterilizationbatchId) {
-      chemicalTestAdded = await pieceFound.createChemicalTest({
+    if (sterilizationbatchId) {
+      const chemicalTestAdded = await pieceFound.createChemicalTest({
         ...chemicalTest,
         testedAt: new Date(),
         sterilizationbatchId,
       });
-    } */
+
+      const sterilizationBatchFound = await SterilizationBatch.findByPk(
+        sterilizationbatchId,
+        {
+          include: [
+            {
+              model: Piece,
+              as: "pieces",
+              include: [
+                {
+                  model: ChemicalTests,
+                  as: "chemicalTests",
+                },
+              ],
+            },
+          ],
+        }
+      );
+      if (!sterilizationBatchFound)
+        return [null, "El lote de esterilizacion no existe"];
+
+      const chemicalTests = sterilizationBatchFound.pieces.flatMap((p) =>
+        p.chemicalTests.slice(0, 1)
+      );
+
+      // Si alguna prueba es "Reactivo", el estado es "rechazado"
+      const status = chemicalTests.some((test) => test.result === "Reactivo")
+        ? "Rechazado"
+        : chemicalTests.length === 11
+        ? "Aprobado"
+        : "";
+
+      if (status) {
+        sterilizationBatchFound.update({ status });
+      }
+
+      return [chemicalTestAdded.toJSON(), null];
+    }
   } catch (error) {
     handleError(error, "piece.service -> addChemicalTestToPiece");
     return [null, "Error al crear la prueba quimica a la pieza"];
@@ -148,7 +189,7 @@ async function updateChemicalTest(
 
     await chemicalTestFound.update(chemicalTest);
     await chemicalTestFound.reload();
-    
+
     if (pieceBatchId)
       await updatePieceBatchStatusAccordingChemicalTests(pieceBatchId);
 
