@@ -15,6 +15,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./index.css";
 import TissueProcessing from "./routes/TissueProcessing.jsx";
 import QualityControl from "./routes/QualityControl.jsx";
+import DistributionLogisticsTraceability from "./routes/DistributionLogisticsTraceability.jsx";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,17 @@ const router = createBrowserRouter([
             userProcessIdAllowed={userProcesses.CONTROL_CALIDAD}
           >
             <QualityControl />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/distribution-logistics-and-traceability",
+        element: (
+          <ProtectedRoute
+            userRolesAllowed={[userRoles.ADMIN, userRoles.ASSISTANT]}
+            userProcessIdAllowed={userProcesses.DISTRIBUCION_TRAZABILIDAD}
+          >
+            <DistributionLogisticsTraceability />
           </ProtectedRoute>
         ),
       },

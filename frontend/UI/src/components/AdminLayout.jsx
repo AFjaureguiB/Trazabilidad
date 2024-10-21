@@ -149,7 +149,12 @@ export default function AdminLayout() {
               <LatestSterilizationBatchInfo />
             </LatestData>
           ) : (
-            <p>Aqui iran las cosas de otro proceso </p>
+            <LatestData
+              title={"Últimos Envios Realizados"}
+              href={"/distribution-logistics-and-traceability"}
+            >
+              <p>Contenido relacionado con el quinto proceso </p>
+            </LatestData>
           )}
         </div>
       </div>

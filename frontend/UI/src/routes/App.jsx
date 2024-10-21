@@ -23,6 +23,9 @@ function App() {
   if (user.processId === userProcesses.CONTROL_CALIDAD)
     return <Navigate to="/quality-control" />;
 
+  if (user.processId === userProcesses.DISTRIBUCION_TRAZABILIDAD)
+    return <Navigate to="/distribution-logistics-and-traceability" />;
+
   return <p>Pagina principal para un usuario normal</p>;
 }
 
