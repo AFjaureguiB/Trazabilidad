@@ -8,6 +8,7 @@ import Piece from "./piece.model.js";
 import PieceBatch from "./piecebatch.model.js";
 import ChemicalTests from "./chemicaltests.model.js";
 import SterilizationBatch from "./sterilizationbatch.model.js";
+import Shipment from "./shipment.model.js";
 
 //Un role lo tienen varios usuarios
 Role.hasMany(User);
@@ -80,6 +81,17 @@ Piece.belongsToMany(SterilizationBatch, {
   as: "sterilizationBatch",
 });
 
+// Relación entre Shipments y Pieces
+Shipment.hasMany(Piece, {
+  foreignKey: "shipmentId",
+  as: "pieces",
+});
+
+Piece.belongsTo(Shipment, {
+  foreignKey: "shipmentId",
+  as: "shipment",
+});
+
 export {
   User,
   Role,
@@ -91,4 +103,5 @@ export {
   PieceBatch,
   SterilizationBatch,
   ChemicalTests,
+  Shipment,
 };

@@ -34,6 +34,13 @@ const Piece = sequelize.define(
       onDelete: "CASCADE",
       onUpdate: "CASCADE",
     },
+    shipmentId: {
+      type: DataTypes.INTEGER,
+      references: {
+        model: "Tissue",
+        key: "id",
+      },
+    },
     createdAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
     updatedAt: { type: DataTypes.DATE, defaultValue: DataTypes.NOW },
   },
