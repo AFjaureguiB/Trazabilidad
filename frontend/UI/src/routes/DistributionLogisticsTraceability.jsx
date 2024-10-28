@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { getInventory } from "../services/inventory.service";
 import Accordion from "../components/Accordion";
 import InventoryAccordionHeader from "../components/InventoryAccordionHeader";
+import ShipmentForm from "../components/ShipmentForm";
 
 export default function DistributionLogisticsTraceability() {
   const [inventory, setInventory] = useState([]);
@@ -18,6 +19,7 @@ export default function DistributionLogisticsTraceability() {
   useEffect(() => {
     fetchInventory();
   }, []);
+
   return (
     <>
       {user.role === userRoles.ADMIN ? (
@@ -30,7 +32,7 @@ export default function DistributionLogisticsTraceability() {
         </a>
       ) : null}
       <div className="mt-4">
-        <div className="flex gap-8 p-4">
+        <div className="flex gap-10 p-4">
           <div className="w-1/2">
             <div className="my-4">
               <h6 className="text-xl text-gray-500 font-bold py-2">
@@ -86,6 +88,19 @@ export default function DistributionLogisticsTraceability() {
                   </Accordion.Item>
                 ))}
               </Accordion>
+            </div>
+          </div>
+          <div className="w-1/2 px-2 pb-2">
+            <div className="my-4">
+              <h6 className="text-xl text-gray-500 font-bold py-2">
+                Creacion de envios
+              </h6>
+            </div>
+            <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
+              <ShipmentForm
+                inventory={inventory}
+                fetchInventory={fetchInventory}
+              />
             </div>
           </div>
         </div>
