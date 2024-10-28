@@ -5,7 +5,11 @@ import Trash from "../components/icons/Trash";
 import { saveShipment } from "../services/shipment.service";
 import { notifyError, notifySuccess } from "../utils/notifyToast";
 
-export default function ShipmentForm({ inventory, fetchInventory }) {
+export default function ShipmentForm({
+  inventory,
+  fetchInventory,
+  fetchShipments,
+}) {
   const {
     register,
     handleSubmit,
@@ -51,6 +55,7 @@ export default function ShipmentForm({ inventory, fetchInventory }) {
       notifySuccess(shipmentMessage);
       reset(); //Reiniciamos los controles de formulario
       fetchInventory();
+      fetchShipments();
     }
   };
 
