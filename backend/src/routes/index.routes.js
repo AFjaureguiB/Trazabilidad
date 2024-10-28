@@ -24,6 +24,7 @@ import pieceBatchRoutes from "./pieceBatch.routes.js";
 import sterilizationBatchRoutes from "../routes/sterilizationBatch.routes.js";
 
 import inventoryRoutes from "./inventory.routes.js";
+import shipmentRoutes from "./shipment.routes.js";
 
 /** Instancia del enrutador */
 const router = Router();
@@ -50,5 +51,7 @@ router.use(
 );
 
 router.use("/inventory", inventoryRoutes);
+
+router.use("/shipment", authenticationMiddleware, shipmentRoutes);
 // Exporta el enrutador
 export default router;

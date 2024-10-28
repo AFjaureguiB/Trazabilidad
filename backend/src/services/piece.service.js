@@ -5,6 +5,7 @@ import {
   ChemicalTests,
   SterilizationBatch,
 } from "../models/index.js";
+import { handleError } from "../utils/errorHandler.js";
 import { updatePieceBatchStatusAccordingChemicalTests } from "./pieceBatch.service.js";
 import { updateSterilizationBatchStatusAccordingChemicalTests } from "./sterilizationBatch.service.js";
 
