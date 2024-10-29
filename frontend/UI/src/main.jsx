@@ -8,6 +8,7 @@ import Login from "./routes/Login.jsx";
 import App from "./routes/App.jsx";
 import ProtectedRoute from "./guard/ProtectedRoute.jsx";
 import Donors from "./routes/Donors.jsx";
+import Administration from "./routes/Administration.jsx";
 import InfectiousTests from "./routes/InfectiousTests.jsx";
 import { userRoles } from "./constants/user.roles.js";
 import { userProcesses } from "./constants/user.processes.js";
@@ -35,6 +36,17 @@ const router = createBrowserRouter([
             userProcessIdAllowed={userProcesses.DONANTES_TEJIDOS}
           >
             <Donors />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "/administration",
+        element: (
+          <ProtectedRoute
+            userRolesAllowed={[userRoles.ROOT]}
+            userProcessIdAllowed={userProcesses.ROOT}
+          >
+            <Administration />
           </ProtectedRoute>
         ),
       },
