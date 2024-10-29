@@ -36,6 +36,7 @@ router.use("/users", authenticationMiddleware, userRoutes);
 router.use("/donors", authenticationMiddleware, donorRoutes);
 //Define las rutas para los tejidos /api/tissues/:id
 router.use("/tissues", authenticationMiddleware, tissueRoutes);
+
 // Define la ruta para consultar los logs /api/logs
 router.use("/logs", authenticationMiddleware, logRoutes);
 //Define las rutas para las pruebas infecciosas /api/infectious/:id
