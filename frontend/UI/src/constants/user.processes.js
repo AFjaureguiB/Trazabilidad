@@ -4,4 +4,5 @@ export const userProcesses = {
   PROCESAMIENTO_TEJIDOS: 3,
   CONTROL_CALIDAD: 4,
   DISTRIBUCION_TRAZABILIDAD: 5,
+  ROOT: 6,
 };
