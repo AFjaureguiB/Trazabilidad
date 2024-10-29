@@ -78,7 +78,7 @@ export default function CreatePieceTestSterilizationForm({
     }
   };
 
-  const currentPiecesBatch = sterilizationBatches.find(
+  const currentPiecesBatch = sterilizationBatches?.find(
     (batch) => batch.id === pieceTestSterilizationData.steBatchId
   );
   const chemicalTests = currentPiecesBatch?.pieces.flatMap(
