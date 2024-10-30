@@ -1,7 +1,9 @@
 "use strict";
 
-import { SterilizationBatch, Piece } from "../models/index.js";
+import { SterilizationBatch, Piece, ChemicalTests } from "../models/index.js";
 import { referencias } from "../constants/referencias.js";
+import { handleError } from "../utils/errorHandler.js";
+import { Op } from "sequelize";
 
 // Filtrar y organizar las piezas por referencia
 const groupPiecesByReference = (sterilizationBatches) => {
@@ -60,6 +62,15 @@ const groupPiecesByReference = (sterilizationBatches) => {
 
 async function getInventory() {
   try {
+    const pieceIdsWithTests = await ChemicalTests.findAll({
+      attributes: ["pieceId"],
+      group: ["pieceId"],
+    });
+
+    const pieceIdsWithTestsArray = pieceIdsWithTests.map(
+      (test) => test.pieceId
+    );
+
     const sterilizationBatchesFromDB = await SterilizationBatch.findAll({
       where: {
         status: "Aprobado",
@@ -70,6 +81,9 @@ async function getInventory() {
           as: "pieces",
           where: {
             shipmentId: null,
+            id: {
+              [Op.notIn]: pieceIdsWithTestsArray, // Excluir piezas que tienen pruebas químicas
+            },
           },
         },
       ],
@@ -78,11 +92,11 @@ async function getInventory() {
     if (!sterilizationBatchesFromDB)
       return [null, "Error al obtener informacion para generar inventario"];
 
-    if (sterilizationBatchesFromDB.length === 0)
+    /* if (sterilizationBatchesFromDB.length === 0)
       return [
         null,
         "No hay lotes de esterilizacon aprobados o piezas en el inventario",
-      ];
+      ]; */
 
     const inventory = groupPiecesByReference(sterilizationBatchesFromDB);
     return [inventory, null];
