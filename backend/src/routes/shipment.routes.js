@@ -9,5 +9,5 @@ const router = Router();
 
 router.post("/", shipmentController.saveShipment);
 router.get("/", shipmentController.getShipments);
-//router.put("/", );
+router.put("/", shipmentController.updateShipment);
 export default router;

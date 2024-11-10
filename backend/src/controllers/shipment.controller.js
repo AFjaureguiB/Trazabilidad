@@ -46,7 +46,24 @@ async function saveShipment(req, res) {
   }
 }
 
+async function updateShipment(req, res) {
+  try {
+    const { id, ...shipmentData } = req.body;
+    const [updateShipment, updateShipmentError] =
+      await shipmentService.updateShipment(id, shipmentData);
+
+    if (updateShipmentError)
+      return respondError(req, res, 400, updateShipmentError);
+
+    respondSuccess(req, res, 200, updateShipment);
+  } catch (error) {
+    handleError(error, "shipment.controller -> updateShipment");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   saveShipment,
   getShipments,
+  updateShipment,
 };

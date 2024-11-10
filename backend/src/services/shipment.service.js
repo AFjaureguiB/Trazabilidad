@@ -41,4 +41,19 @@ async function saveShipment(pieceIds, shipmentData) {
   }
 }
 
-export default { saveShipment, getShipments };
+async function updateShipment(id, shipmentData) {
+  try {
+    const shipmentFound = await Shipment.findByPk(id);
+    if (!shipmentFound) return [null, "El envio no existe"];
+
+    await shipmentFound.update(shipmentData);
+    await shipmentFound.reload();
+
+    return [shipmentFound.toJSON(), null];
+  } catch (error) {
+    handleError(error, "shipment.service -> updateShipment");
+
+    return [null, "Error al actualizar el envio"];
+  }
+}
+export default { saveShipment, getShipments, updateShipment };
