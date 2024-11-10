@@ -1,7 +1,15 @@
 /* eslint-disable react/prop-types */
+import { userRoles } from "../constants/user.roles";
+import { useAuth } from "../context/AuthContext";
 import Chevron from "./icons/Chevron";
+import Pencil from "./icons/Pencil";
 
-export default function ShipmentAccordionHeader({ isActive, shipment }) {
+export default function ShipmentAccordionHeader({
+  isActive,
+  shipment,
+  setShipmentToEdit,
+}) {
+  const { user } = useAuth();
   return (
     <div className={`${isActive ? "border-b border-gray-300" : ""}`}>
       <div
@@ -69,6 +77,25 @@ export default function ShipmentAccordionHeader({ isActive, shipment }) {
             </span>
           </p>
         </div>
+
+        {user.role === userRoles.ADMIN ? (
+          <div>
+            <button
+              className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShipmentToEdit({
+                  showShimpmentEditForm: true,
+                  shimpment: shipment,
+                });
+              }}
+            >
+              <Pencil className={"size-5"} />
+              <span>Editar Envio</span>
+            </button>
+          </div>
+        ) : null}
+
         <div className="px-6 py-4">
           <div>
             <Chevron className={`size-6 ${isActive ? "rotate-180" : ""}`} />

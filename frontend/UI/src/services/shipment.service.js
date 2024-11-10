@@ -37,3 +37,22 @@ export const saveShipment = async (payload) => {
     return error.response.data;
   }
 };
+
+export const updateShipment = async (payload) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.put("/shipment", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};

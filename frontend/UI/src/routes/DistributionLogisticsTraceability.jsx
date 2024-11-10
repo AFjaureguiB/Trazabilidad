@@ -9,11 +9,17 @@ import ShipmentForm from "../components/ShipmentForm";
 import { getShipments } from "../services/shipment.service";
 import Tabs from "../components/Tabs";
 import ShipmentAccordionHeader from "../components/ShipmentAccordionHeader";
+import EditShipmentForm from "../components/EditShipmentForm";
 
 export default function DistributionLogisticsTraceability() {
   const [inventory, setInventory] = useState([]);
   const [shipments, setShipments] = useState([]);
   const { user } = useAuth();
+
+  const [shipmentToEdit, setShipmentToEdit] = useState({
+    showShimpmentEditForm: false,
+    shimpment: undefined,
+  });
 
   const fetchInventory = async () => {
     const { data } = await getInventory();
@@ -45,16 +51,20 @@ export default function DistributionLogisticsTraceability() {
         <Tabs>
           <Tabs.Item title="Inventario">
             <div className="flex gap-10 p-4">
-              <div className="w-1/2">
+              <div
+                className={`${
+                  user.role === userRoles.ADMIN ? "w-full" : "w-1/2"
+                } `}
+              >
                 <div className="my-4">
                   <h6 className="text-xl text-gray-500 font-bold py-2">
                     Inventario de piezas
                   </h6>
                 </div>
                 <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
-                  <Accordion allowMultiple>
-                    {inventory.length != 0 ? (
-                      inventory.map((referenceGroup) => (
+                  {inventory.length != 0 ? (
+                    <Accordion allowMultiple>
+                      {inventory.map((referenceGroup) => (
                         <Accordion.Item
                           key={referenceGroup.references}
                           header={<InventoryAccordionHeader />}
@@ -99,16 +109,16 @@ export default function DistributionLogisticsTraceability() {
                             ))}
                           </div>
                         </Accordion.Item>
-                      ))
-                    ) : (
-                      <p className="text-xl text-gray-500 font-bold pl-5">
-                        No tenemos piezas en el inventario ...
-                      </p>
-                    )}
-                  </Accordion>
+                      ))}
+                    </Accordion>
+                  ) : (
+                    <p className="text-xl text-gray-500 font-bold pl-5">
+                      No tenemos piezas en el inventario ...
+                    </p>
+                  )}
                 </div>
               </div>
-              {inventory.length != 0 && (
+              {inventory.length != 0 && user.role === userRoles.ASSISTANT ? (
                 <div className="w-1/2 px-2 pb-2">
                   <div className="my-4">
                     <h6 className="text-xl text-gray-500 font-bold py-2">
@@ -123,7 +133,7 @@ export default function DistributionLogisticsTraceability() {
                     />
                   </div>
                 </div>
-              )}
+              ) : null}
             </div>
           </Tabs.Item>
           <Tabs.Item title="Envios Realizados">
@@ -140,6 +150,7 @@ export default function DistributionLogisticsTraceability() {
                       key={shipment.id}
                       header={<ShipmentAccordionHeader />}
                       shipment={shipment}
+                      setShipmentToEdit={setShipmentToEdit}
                       className={
                         "border border-gray-300 rounded-lg overflow-hidden"
                       }
@@ -188,6 +199,11 @@ export default function DistributionLogisticsTraceability() {
           </Tabs.Item>
         </Tabs>
       </div>
+      <EditShipmentForm
+        shipmentToEdit={shipmentToEdit}
+        setShipmentToEdit={setShipmentToEdit}
+        fetchShipments={fetchShipments}
+      />
     </>
   );
 }
