@@ -16,6 +16,7 @@ import {
 } from "../services/user.service";
 import { userProcesses } from "../constants/user.processes";
 import LatestSterilizationBatchInfo from "./LatestSterilizationBatchInfo";
+import LatestShipmetsInfo from "./LatestShipmetsInfo";
 
 export default function AdminLayout() {
   const [users, setUsers] = useState([]);
@@ -153,7 +154,7 @@ export default function AdminLayout() {
               title={"Últimos Envios Realizados"}
               href={"/distribution-logistics-and-traceability"}
             >
-              <p>Contenido relacionado con el quinto proceso </p>
+              <LatestShipmetsInfo />
             </LatestData>
           )}
         </div>
