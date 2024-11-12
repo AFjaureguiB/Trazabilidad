@@ -23,6 +23,19 @@ async function getUsers(req, res) {
     respondError(req, res, 400, error.message);
   }
 }
+async function getAdminUsers(req, res) {
+  try {
+    const [usuarios, errorUsuarios] = await UserService.getAdminUsers();
+    if (errorUsuarios) return respondError(req, res, 404, errorUsuarios);
+
+    usuarios.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, usuarios);
+  } catch (error) {
+    handleError(error, "user.controller -> getUsers");
+    respondError(req, res, 400, error.message);
+  }
+}
 
 /**
  * Crea un nuevo usuario
@@ -127,4 +140,5 @@ export default {
   getUserById,
   updateUser,
   deleteUser,
+  getAdminUsers,
 };
