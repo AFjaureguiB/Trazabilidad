@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { getLogs } from "../services/logs.service"; // Importa el servicio para obtener los logs
 import LogsTableAdministration from "../components/LogsTableAdministration";
 import Tabs from "../components/Tabs.jsx";
+import AdminUsersCard from "../components/AdminUsersCard.jsx";
 
 const Administration = () => {
   const [logs, setLogs] = useState([]);
@@ -21,7 +22,9 @@ const Administration = () => {
         <Tabs.Item title="Logs">
           <LogsTableAdministration logs={logs} />
         </Tabs.Item>
-        <Tabs.Item title="Usuarios Admin"></Tabs.Item>
+        <Tabs.Item title="Usuarios Admin">
+          <AdminUsersCard />
+        </Tabs.Item>
       </Tabs>
     </div>
   );
