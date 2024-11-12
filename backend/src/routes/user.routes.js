@@ -6,7 +6,7 @@ import { Router } from "express";
 import usuarioController from "../controllers/user.controller.js";
 
 /** Middlewares de autorización */
-import { isAdmin } from "../middlewares/authorization.middleware.js";
+import { isAdmin, isRoot } from "../middlewares/authorization.middleware.js";
 
 /** Middleware de autenticación */
 import authenticationMiddleware from "../middlewares/authentication.middleware.js";
@@ -16,6 +16,10 @@ const router = Router();
 
 // Define el middleware de autenticación para todas las rutas
 router.use(authenticationMiddleware);
+
+//importante que este primero esta linea que las de abajo, por que si no hace match con /users/ y actua primero el middleware isAdmin
+//admin users, que son gestionados solo por un usuario root
+router.get("/admins", isRoot, usuarioController.getAdminUsers); // /api/users/
 
 // Define las rutas para los usuarios
 router.get("/", isAdmin, usuarioController.getUsers); // /api/users/

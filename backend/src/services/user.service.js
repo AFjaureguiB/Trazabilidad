@@ -31,6 +31,27 @@ async function getUsers(process) {
   }
 }
 
+async function getAdminUsers() {
+  try {
+    const usersFromDB = await User.findAll({
+      include: ["Role", "Process"],
+    });
+
+    if (!usersFromDB) return [null, "No hay usuarios"];
+
+    //recupero todos los usuarios de la DB
+    const users = usersFromDB.map((user) => user.toJSON());
+
+    //filtro solo los usuarios que pertenecen al proceso del admin que esta realizando el request
+    //de igual manera regreso solo los users con role `ASSISTANT`
+    const filteredUsers = users.filter((user) => user.Role.name === "ADMIN");
+
+    return [filteredUsers, null];
+  } catch (error) {
+    handleError(error, "user.service -> getAdminUsers");
+  }
+}
+
 /**
  * Crea un nuevo usuario en la base de datos con el role "ASSISTANT" por defecto, ya que es el unico role que es posible crear desde la UI. Si se desea crear un usuario con el role "ADMIN", se requiere hacer desde la base de datos.
  * @param {Object} user Objeto de usuario
@@ -185,4 +206,5 @@ export default {
   getUserById,
   updateUser,
   deleteUser,
+  getAdminUsers,
 };
