@@ -1,22 +1,8 @@
 /* eslint-disable react/prop-types */
-import { useEffect, useState } from "react";
-import UsersCard from "./UsersCard";
-import { getUsersAdmin } from "../services/user.service";
 import Pencil from "./icons/Pencil";
 import Trash from "./icons/Trash";
 
-export default function AdminUsersCard() {
-  const [users, setUsers] = useState([]);
-
-  const fetchUsers = async () => {
-    const res = await getUsersAdmin();
-    setUsers(res);
-  };
-
-  useEffect(() => {
-    fetchUsers();
-  }, []);
-
+export default function AdminUsersCard({ users }) {
   return (
     <div className="mt-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow">
       <div>
