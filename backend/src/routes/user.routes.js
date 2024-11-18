@@ -20,6 +20,7 @@ router.use(authenticationMiddleware);
 //importante que este primero esta linea que las de abajo, por que si no hace match con /users/ y actua primero el middleware isAdmin
 //admin users, que son gestionados solo por un usuario root
 router.get("/admins", isRoot, usuarioController.getAdminUsers); // /api/users/
+router.post("/admins", isRoot, usuarioController.createAdminUser);
 
 // Define las rutas para los usuarios
 router.get("/", isAdmin, usuarioController.getUsers); // /api/users/
