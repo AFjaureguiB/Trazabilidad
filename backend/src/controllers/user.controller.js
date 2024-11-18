@@ -23,6 +23,7 @@ async function getUsers(req, res) {
     respondError(req, res, 400, error.message);
   }
 }
+
 async function getAdminUsers(req, res) {
   try {
     const [usuarios, errorUsuarios] = await UserService.getAdminUsers();
@@ -61,6 +62,26 @@ async function createUser(req, res) {
     respondSuccess(req, res, 201, newUser);
   } catch (error) {
     handleError(error, "user.controller -> createUser");
+    respondError(req, res, 500, "No se creo el usuario");
+  }
+}
+
+async function createAdminUser(req, res) {
+  try {
+    const user = req.body;
+    const { error: bodyError } = userBodySchema.validate(user);
+    if (bodyError) return respondError(req, res, 400, bodyError.message);
+
+    const [newUser, userError] = await UserService.createAdminUser(user);
+
+    if (userError) return respondError(req, res, 400, userError);
+    if (!newUser) {
+      return respondError(req, res, 400, "No se creo el usuario");
+    }
+
+    respondSuccess(req, res, 201, newUser);
+  } catch (error) {
+    handleError(error, "user.controller -> createAdminUser");
     respondError(req, res, 500, "No se creo el usuario");
   }
 }
@@ -141,4 +162,5 @@ export default {
   updateUser,
   deleteUser,
   getAdminUsers,
+  createAdminUser,
 };

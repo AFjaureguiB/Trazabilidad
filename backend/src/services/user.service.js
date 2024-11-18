@@ -105,6 +105,45 @@ async function createUser(user) {
   }
 }
 
+async function createAdminUser(user) {
+  try {
+    const { firstname, lastname, username, plainpassword, email, process } =
+      user;
+
+    const userFound = await User.findOne({
+      where: { username },
+    });
+
+    if (userFound) return [null, "El usuario ya existe"];
+
+    const roleFound = await Role.findOne({
+      where: { name: "ADMIN" },
+    });
+
+    if (!roleFound) return [null, "El rol no existe"];
+
+    const processFound = await Process.findOne({
+      where: { name: process },
+    });
+
+    if (!processFound) return [null, "El proceso no existe"];
+
+    const newUser = await User.create({
+      firstname,
+      lastname,
+      username,
+      plainpassword,
+      password: await User.hashPassword(plainpassword),
+      email,
+      roleId: roleFound.id,
+      processId: processFound.id,
+    });
+    return [newUser.toJSON(), null];
+  } catch (error) {
+    handleError(error, "user.service -> createAdminUser");
+  }
+}
+
 /**
  * Obtiene un usuario por su id de la base de datos
  * @param {string} Id del usuario
@@ -207,4 +246,5 @@ export default {
   updateUser,
   deleteUser,
   getAdminUsers,
+  createAdminUser,
 };
