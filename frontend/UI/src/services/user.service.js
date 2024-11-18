@@ -94,6 +94,26 @@ export const addUser = async (newUser) => {
   }
 };
 
+export const addAdminUser = async (newUser) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const response = await axios.post("/users/admins", newUser, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    console.log(response);
+    const { status, data } = response;
+    if (status === 201) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
+
 export const updateUser = async (user, id) => {
   try {
     const token = localStorage.getItem("accestkn");
