@@ -2,7 +2,11 @@
 import Pencil from "./icons/Pencil";
 import Trash from "./icons/Trash";
 
-export default function AdminUsersCard({ users, setUserAdminData }) {
+export default function AdminUsersCard({
+  users,
+  setUserAdminData,
+  handleDelete,
+}) {
   return (
     <div className="mt-4 w-full p-4 bg-white border border-gray-200 rounded-lg shadow">
       <div>
@@ -64,7 +68,7 @@ export default function AdminUsersCard({ users, setUserAdminData }) {
                     <button
                       className="px-3 py-2 text-xs font-medium text-center text-white bg-red-700 rounded-lg hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300"
                       title="Eliminar usuario"
-                      onClick={() => console.log("")}
+                      onClick={() => handleDelete(user.id)}
                     >
                       <Trash />
                     </button>

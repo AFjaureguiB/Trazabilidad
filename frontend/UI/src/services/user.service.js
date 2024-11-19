@@ -70,6 +70,28 @@ export const deleteUserById = async (userId) => {
     };
   }
 };
+export const deleteAdminUserById = async (userId) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const URL = `/users/admins/${userId}`;
+    const response = await axios.delete(URL, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const { status, data } = response;
+
+    if (status === 200) {
+      return data;
+    }
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
 
 export const addUser = async (newUser) => {
   try {

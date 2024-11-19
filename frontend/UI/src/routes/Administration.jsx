@@ -7,7 +7,11 @@ import { userRoles } from "../constants/user.roles.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import Plus from "../components/icons/Plus.jsx";
 import AdminUserForm from "../components/AdminUserForm.jsx";
-import { getUsersAdmin } from "../services/user.service.js";
+import {
+  getUsersAdmin,
+  deleteAdminUserById,
+} from "../services/user.service.js";
+import { notifyError, notifySuccess } from "../utils/notifyToast.js";
 
 const Administration = () => {
   const [logs, setLogs] = useState([]);
@@ -35,6 +39,22 @@ const Administration = () => {
     setUsers(res);
   };
 
+  const handleDelete = async (id) => {
+    console.log(id);
+    const {
+      state,
+      data,
+      message: messageError,
+    } = await deleteAdminUserById(id);
+
+    if (state === "Error") notifyError(messageError);
+
+    if (state == "Success") {
+      notifySuccess(data);
+      fetchUsers();
+    }
+  };
+
   return (
     <div className="mt-4">
       <Tabs>
@@ -58,7 +78,11 @@ const Administration = () => {
               </button>
             </div>
           ) : null}
-          <AdminUsersCard users={users} setUserAdminData={setUserAdminData} />
+          <AdminUsersCard
+            users={users}
+            setUserAdminData={setUserAdminData}
+            handleDelete={handleDelete}
+          />
         </Tabs.Item>
       </Tabs>
       <AdminUserForm
