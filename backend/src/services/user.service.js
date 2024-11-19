@@ -219,6 +219,37 @@ async function updateUser(id, user) {
   }
 }
 
+async function updateAdminUser(id, user) {
+  try {
+    const userFound = await User.findByPk(id);
+    if (!userFound) return [null, "El usuario no existe"];
+
+    const { firstname, lastname, username, email, process } = user;
+
+    const processFound = await Process.findOne({
+      where: { name: process },
+    });
+
+    if (!processFound) return [null, "El proceso no existe"];
+
+    await userFound.update({
+      firstname,
+      lastname,
+      username,
+      email,
+      processId: processFound.id,
+    });
+    await userFound.save();
+
+    await userFound.reload();
+
+    return [userFound.toJSON(), null];
+  } catch (error) {
+    console.error(error);
+    handleError(error, "user.service -> updateAdminUser");
+  }
+}
+
 /**
  * Elimina un usuario por su id de la base de datos
  * @param {string} Id del usuario
@@ -247,4 +278,5 @@ export default {
   deleteUser,
   getAdminUsers,
   createAdminUser,
+  updateAdminUser,
 };

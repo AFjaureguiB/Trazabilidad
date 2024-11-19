@@ -21,6 +21,7 @@ router.use(authenticationMiddleware);
 //admin users, que son gestionados solo por un usuario root
 router.get("/admins", isRoot, usuarioController.getAdminUsers); // /api/users/
 router.post("/admins", isRoot, usuarioController.createAdminUser);
+router.put("/admins", isRoot, usuarioController.updateAdminUser);
 
 // Define las rutas para los usuarios
 router.get("/", isAdmin, usuarioController.getUsers); // /api/users/

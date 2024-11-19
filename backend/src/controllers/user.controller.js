@@ -133,6 +133,21 @@ async function updateUser(req, res) {
   }
 }
 
+async function updateAdminUser(req, res) {
+  try {
+    const { id, ...newUser } = req.body;
+
+    const [user, userError] = await UserService.updateAdminUser(id, newUser);
+
+    if (userError) return respondError(req, res, 400, userError);
+
+    respondSuccess(req, res, 200, user);
+  } catch (error) {
+    handleError(error, "user.controller -> updateAdminUser");
+    respondError(req, res, 500, "No se pudo actualizar el usuario");
+  }
+}
+
 /**
  * Elimina un usuario por su id
  * @param {Object} req - Objeto de petición
@@ -163,4 +178,5 @@ export default {
   deleteUser,
   getAdminUsers,
   createAdminUser,
+  updateAdminUser,
 };
