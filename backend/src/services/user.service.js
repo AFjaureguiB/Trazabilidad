@@ -1,5 +1,6 @@
 "use strict";
 
+import { where } from "sequelize";
 /** Modelo de datos 'User' */
 import { User, Role, Process } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
@@ -270,6 +271,37 @@ async function deleteUser(id) {
   }
 }
 
+async function updatePassword(username, plainpassword, newpassword) {
+  try {
+    const userFound = await User.findOne({ where: { username: username } });
+    if (!userFound) return [null, "El usuario no existe"];
+
+    const matchPassword = await User.comparePassword(
+      plainpassword,
+      userFound.password
+    );
+
+    if (!matchPassword)
+      return [
+        null,
+        "La contraseña no coincide, verifica  tu contraseña actual",
+      ];
+
+    await userFound.update({
+      plainpassword: newpassword,
+      password: await User.hashPassword(newpassword),
+    });
+
+    await userFound.save();
+
+    await userFound.reload();
+
+    return ["Contraseña actualizada correctamente", null];
+  } catch (error) {
+    handleError(error, "user.service -> updatePassword");
+  }
+}
+
 export default {
   getUsers,
   createUser,
@@ -279,4 +311,5 @@ export default {
   getAdminUsers,
   createAdminUser,
   updateAdminUser,
+  updatePassword,
 };

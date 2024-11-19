@@ -24,6 +24,8 @@ router.post("/admins", isRoot, usuarioController.createAdminUser);
 router.put("/admins", isRoot, usuarioController.updateAdminUser);
 router.delete("/admins/:id", isRoot, usuarioController.deleteUser);
 
+router.put("/password", usuarioController.updatePassword);
+
 // Define las rutas para los usuarios
 router.get("/", isAdmin, usuarioController.getUsers); // /api/users/
 router.post("/", isAdmin, usuarioController.createUser);
