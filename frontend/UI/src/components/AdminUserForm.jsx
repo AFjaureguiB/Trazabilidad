@@ -2,7 +2,7 @@
 import { useForm } from "react-hook-form";
 import Modal from "./Modal";
 import { useEffect } from "react";
-import { addAdminUser } from "../services/user.service.js";
+import { addAdminUser, updateAdminUser } from "../services/user.service.js";
 import { notifyError, notifySuccess } from "../utils/notifyToast.js";
 
 export default function AdminUserForm({
@@ -28,26 +28,29 @@ export default function AdminUserForm({
 
   useEffect(() => {
     if (!userAdminData.userAdmin) return;
-    setValue("firstname", "");
-    setValue("lastname", "");
-    setValue("username", "");
-    setValue("email", "");
-    setValue("plainpassword", "");
+    setValue("id", userAdminData.userAdmin.id);
+    setValue("firstname", userAdminData.userAdmin.firstname);
+    setValue("lastname", userAdminData.userAdmin.lastname);
+    setValue("username", userAdminData.userAdmin.username);
+    setValue("email", userAdminData.userAdmin.email);
+    setValue("process", userAdminData.userAdmin.Process.name);
   }, [userAdminData.userAdmin, setValue]);
 
   const onSubmit = async (payload) => {
-    console.log(payload);
     const {
       state,
       data,
-      details: detailsError,
       message: messageError,
-    } = await addAdminUser(payload);
+    } = !userAdminData.userAdmin
+      ? await addAdminUser(payload)
+      : await updateAdminUser(payload);
 
     if (state === "Error") notifyError(messageError);
 
     if (state == "Success") {
-      const message = `Usuario ${data.firstname} ${data.lastname}, creado con exito`;
+      const message = `Usuario ${data.firstname} ${data.lastname}, ${
+        !userAdminData.userAdmin ? "creado" : "actualizado"
+      }  con exito`;
       notifySuccess(message);
       fetchUsers();
       handleClose();
