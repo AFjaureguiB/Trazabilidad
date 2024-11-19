@@ -1,53 +1,70 @@
+/* eslint-disable react/prop-types */
 import LogoFundonemos from "../icons/Logo";
+import Accordion from "./Accordion";
+import Pencil from "./icons/Pencil";
+import UserAccordionHeader from "./UserAccordionHeader";
 
-export default function Header({ user, handleLogout }) {
+export default function Header({
+  user,
+  handleLogout,
+  setShowUpdatePasswordForm,
+}) {
   return (
-    <nav className="bg-[#183254] flex justify-between items-center p-4">
-      <a href="/">
-        <LogoFundonemos />
-      </a>
-      <div className="flex items-center gap-8">
-        <div className="flex items-center gap-4">
-          <span className="relative size-10 overflow-hidden bg-gray-100 rounded-full block">
-            <svg
-              className="absolute w-15 h-12 text-gray-400 -left-1"
-              fill="currentColor"
-              viewBox="0 0 20 20"
+    <nav className="bg-[#183254] p-4">
+      <div className="max-w-screen-2xl mx-auto flex justify-between">
+        <a href="/">
+          <LogoFundonemos />
+        </a>
+        <div className="flex items-center gap-8">
+          <Accordion>
+            <Accordion.Item
+              key={user.id}
+              header={<UserAccordionHeader />}
+              user={user}
             >
-              <path
-                fillRule="evenodd"
-                d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                clipRule="evenodd"
-              ></path>
-            </svg>
-          </span>
-          <div className="flex flex-col gap-1">
-            <span className="text-white text-lg">{user.username}</span>
-            <span className="text-xs text-gray-200">
-              {user.process}, <span className="lowercase">{user.role} </span>
-            </span>
-          </div>
+              <div className="relative flex justify-center">
+                <div
+                  id="dropdown"
+                  className="absolute top-1 z-10 bg-white divide-y divide-gray-100 rounded-lg shadow border"
+                >
+                  <ul className="py-2 text-sm text-gray-700">
+                    <li>
+                      <button
+                        className="flex gap-2 px-4 py-2 hover:bg-gray-100 items-center whitespace-nowrap  w-full"
+                        onClick={() => setShowUpdatePasswordForm(true)}
+                      >
+                        <Pencil />
+                        Cambiar Contraseña
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        className="px-4 py-2 hover:bg-gray-100 flex gap-2 items-center w-full"
+                        onClick={handleLogout}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth={1.5}
+                          stroke="currentColor"
+                          className="size-5 rotate-180"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
+                          />
+                        </svg>
+                        Cerrar Sesion
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </Accordion.Item>
+          </Accordion>
         </div>
-        <button
-          className="flex items-center gap-2 px-3 py-2 text-xs font-medium text-center text-white bg-blue-600 rounded-lg hover:bg-[#AD1D43] focus:ring-4 focus:outline-none focus:ring-red-300"
-          onClick={handleLogout}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth={1.5}
-            stroke="currentColor"
-            className="size-7 rotate-180 text-gray-100/80 hover:text-gray-100"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15"
-            />
-          </svg>
-          Logout
-        </button>
       </div>
     </nav>
   );

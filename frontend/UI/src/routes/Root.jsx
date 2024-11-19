@@ -4,6 +4,8 @@ import { logout } from "../services/auth.service";
 import { AuthProvider, useAuth } from "../context/AuthContext";
 import Header from "../components/Header";
 import { ToastContainer } from "react-toastify";
+import { useState } from "react";
+import UpdatePasswordForm from "../components/UpdatePasswordForm";
 function Root() {
   return (
     <AuthProvider>
@@ -14,7 +16,7 @@ function Root() {
 
 function PageRoot() {
   const navigate = useNavigate();
-
+  const [showUpdatePasswordForm, setShowUpdatePasswordForm] = useState(false);
   const handleLogout = () => {
     logout();
     navigate("/auth");
@@ -26,9 +28,17 @@ function PageRoot() {
     <>
       <ToastContainer />
       <header>
-        <Header user={user} handleLogout={handleLogout} />
+        <Header
+          user={user}
+          handleLogout={handleLogout}
+          setShowUpdatePasswordForm={setShowUpdatePasswordForm}
+        />
       </header>
       <Outlet />
+      <UpdatePasswordForm
+        showUpdatePasswordForm={showUpdatePasswordForm}
+        setShowUpdatePasswordForm={setShowUpdatePasswordForm}
+      />
     </>
   );
 }

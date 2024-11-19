@@ -183,3 +183,31 @@ export const updateAdminUser = async (user) => {
     return error.response.data;
   }
 };
+
+export const updatePassword = async ({ plainpassword, newpassword }) => {
+  try {
+    const token = localStorage.getItem("accestkn");
+    if (!token) return;
+
+    const userStr = localStorage.getItem("user");
+    const user = JSON.parse(userStr);
+    if (!user) return;
+
+    const payload = {
+      username: user.username,
+      plainpassword,
+      newpassword,
+    };
+    console.log(payload);
+    const response = await axios.put("users/password", payload, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const { status, data } = response;
+    if (status === 200) return data;
+  } catch (error) {
+    console.log(error);
+    return error.response.data;
+  }
+};
