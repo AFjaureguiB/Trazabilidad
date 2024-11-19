@@ -170,6 +170,23 @@ async function deleteUser(req, res) {
   }
 }
 
+async function updatePassword(req, res) {
+  try {
+    const { username, plainpassword, newpassword } = req.body;
+    const [userPass, userPassError] = await UserService.updatePassword(
+      username,
+      plainpassword,
+      newpassword
+    );
+
+    if (userPassError) return respondError(req, res, 400, userPassError);
+    respondSuccess(req, res, 200, userPass);
+  } catch (error) {
+    handleError(error, "user.controller -> updatePassword");
+    respondError(req, res, 500, "No se pudo actualizar la contraseña");
+  }
+}
+
 export default {
   getUsers,
   createUser,
@@ -179,4 +196,5 @@ export default {
   getAdminUsers,
   createAdminUser,
   updateAdminUser,
+  updatePassword,
 };
