@@ -6,6 +6,7 @@ export default function LogsTableAdministration({ logs }) {
   const formatUpdatedData = useCallback((data) => {
     return Object.entries(data)
       .map(([key, value]) => {
+        if (key === "testName") return `${key}: ${value}`;
         return `${key}: Se cambió ${value.prevValue} por ${value.newValue}`;
       })
       .join("\n"); // Utilizamos un salto de línea para que cada dato esté en una nueva línea
