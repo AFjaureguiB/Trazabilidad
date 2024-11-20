@@ -68,7 +68,10 @@ async function updateInfectiousTest(testId, testData, user) {
 
     // Comparar y loguear cambios
     const updatedData = infectiousTestFound.toJSON();
-    const changes = compareAndLogChanges(previousData, updatedData);
+    const changes = {
+      ...compareAndLogChanges(previousData, updatedData),
+      testName: updatedData.testName,
+    };
 
     // Loguear la actividad del usuario
     logUserActivity(
