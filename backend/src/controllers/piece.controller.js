@@ -129,10 +129,26 @@ async function updateChemicalTest(req, res) {
   }
 }
 
+async function getTrazabilityPiecesInShipments(req, res) {
+  try {
+    const [pieces, piecesError] =
+      await PieceService.getTrazabilityPiecesInShipments();
+    if (piecesError) return respondError(req, res, 404, piecesError);
+
+    pieces.length === 0
+      ? respondSuccess(req, res, 204)
+      : respondSuccess(req, res, 200, pieces);
+  } catch (error) {
+    handleError(error, "piece.controller -> getTrazabilityPiecesInShipments");
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
   addChemicalTestToPiece,
   updateChemicalTest,
+  getTrazabilityPiecesInShipments,
 };

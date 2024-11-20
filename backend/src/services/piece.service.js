@@ -1,9 +1,13 @@
+import { Op } from "sequelize";
 import {
   Tissue,
   Piece,
   PieceBatch,
   ChemicalTests,
   SterilizationBatch,
+  Shipment,
+  InfectiousTests,
+  Donor,
 } from "../models/index.js";
 import { handleError } from "../utils/errorHandler.js";
 import { updatePieceBatchStatusAccordingChemicalTests } from "./pieceBatch.service.js";
@@ -207,10 +211,61 @@ async function updateChemicalTest(
   }
 }
 
+//trazabilidad
+async function getTrazabilityPiecesInShipments() {
+  try {
+    const piecesInShipments = await Piece.findAll({
+      where: {
+        shipmentId: {
+          [Op.not]: null, // Filtrar piezas que están en algún envío
+        },
+      },
+      include: [
+        {
+          model: Tissue,
+          as: "tissue",
+          include: [
+            {
+              model: Donor,
+            },
+            {
+              model: InfectiousTests, // Incluir las pruebas infecciosas de cada tejido
+              as: "infectiousTests", // El alias que definiste en la relación
+            },
+          ],
+        },
+        {
+          model: PieceBatch,
+          as: "batches",
+        },
+        {
+          model: SterilizationBatch,
+          as: "sterilizationBatch",
+        },
+        {
+          model: Shipment,
+          as: "shipment", // Alias definido en la relación
+        },
+      ],
+    });
+
+    if (!piecesInShipments)
+      return [null, "No logramos recuperar informacion las piezas"];
+
+    const piecesInShipmentsMapped = piecesInShipments.map((p) => p.toJSON());
+
+    return [piecesInShipmentsMapped, null];
+  } catch (error) {
+    handleError(error, "piece.service -> getPiecesInShipments");
+    return [null, "Error al obtener informacion de las piezas"];
+  }
+}
+
 export default {
   savePiece,
   updatePiece,
   getPiecesWithoutBatch,
   addChemicalTestToPiece,
   updateChemicalTest,
+  getTrazabilityPiecesInShipments,
 };
