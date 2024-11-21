@@ -12,10 +12,15 @@ import {
   deleteAdminUserById,
 } from "../services/user.service.js";
 import { notifyError, notifySuccess } from "../utils/notifyToast.js";
+import Accordion from "../components/Accordion.jsx";
+import { getTrazabilityPiecesInShipments } from "../services/trazability.service.js";
+import PieceTrazabilityAccordionHeader from "../components/PieceTrazabilityAccordionHeader.jsx";
+import { TestResults } from "../constants/results.js";
 
 const Administration = () => {
   const [logs, setLogs] = useState([]);
   const [users, setUsers] = useState([]);
+  const [trazability, setTrazability] = useState([]);
 
   const [userAdminData, setUserAdminData] = useState({
     showUserAdminModal: false,
@@ -23,11 +28,6 @@ const Administration = () => {
   });
 
   const { user } = useAuth();
-
-  useEffect(() => {
-    fetchLogs();
-    fetchUsers();
-  }, []);
 
   const fetchLogs = async () => {
     const res = await getLogs();
@@ -38,6 +38,17 @@ const Administration = () => {
     const res = await getUsersAdmin();
     setUsers(res);
   };
+
+  const fetchTrazability = async () => {
+    const res = await getTrazabilityPiecesInShipments();
+    setTrazability(res);
+  };
+
+  useEffect(() => {
+    fetchLogs();
+    fetchUsers();
+    fetchTrazability();
+  }, []);
 
   const handleDelete = async (id) => {
     console.log(id);
@@ -83,6 +94,171 @@ const Administration = () => {
             setUserAdminData={setUserAdminData}
             handleDelete={handleDelete}
           />
+        </Tabs.Item>
+        <Tabs.Item title="Trazabilidad">
+          <div className="my-4">
+            <h6 className="text-xl text-gray-500 font-bold py-2">
+              Piezas Enviadas
+            </h6>
+          </div>
+          <Accordion allowMultiple>
+            {trazability.length !== 0 ? (
+              trazability.map((piece) => {
+                // Obtener la mitad del tamaño del array
+                const mitad = Math.floor(
+                  piece.tissue.infectiousTests.length / 2
+                );
+                const primeraMitad = piece.tissue.infectiousTests.slice(
+                  0,
+                  mitad
+                );
+                const segundaMitad = piece.tissue.infectiousTests.slice(mitad);
+                return (
+                  <Accordion.Item
+                    key={piece.id}
+                    header={<PieceTrazabilityAccordionHeader />}
+                    piece={piece}
+                    shipment={piece.shipment}
+                    className={
+                      "border border-gray-300 rounded-lg overflow-hidden"
+                    }
+                  >
+                    <div className="p-4">
+                      <div className="gap-2 text-left text-sm items-center justify-center grid grid-cols-5 grid-rows-1 w-full bg-blue-50/50 border border-blue-200 rounded-md p-4">
+                        <div>
+                          {piece.batches.map((batch) => (
+                            <div
+                              key={batch.id}
+                              className="flex flex-col gap-2 text-right text-sm"
+                            >
+                              <p className="space-x-1 text-gray-500">
+                                <span>Lote de pieza:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.id}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Status:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.status}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Fecha inicial:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.startdate}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Fecha final:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.enddate}
+                                </span>
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <div>
+                          {piece.sterilizationBatch.map((batch) => (
+                            <div
+                              key={batch.id}
+                              className="flex flex-col gap-2 text-right text-sm"
+                            >
+                              <p className="space-x-1 text-gray-500">
+                                <span>Lote de esterilizacion:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.id}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Status:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.status}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Fecha inicial:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.startdate}
+                                </span>
+                              </p>
+                              <p className="space-x-1 text-gray-500">
+                                <span>Fecha final:</span>
+                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                                  {batch.enddate}
+                                </span>
+                              </p>
+                            </div>
+                          ))}
+                        </div>
+                        <div className="flex flex-col gap-2 text-right text-sm">
+                          <p className="space-x-1 text-gray-500">
+                            <span>Codigo de Tejido:</span>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                              {piece.tissue.code}
+                            </span>
+                          </p>
+                          <p className="space-x-1 text-gray-500">
+                            <span>Tipo tejido:</span>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                              {piece.tissue.tissuetype}
+                            </span>
+                          </p>
+                          <p className="space-x-1 text-gray-500">
+                            <span>Status Tejido:</span>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                              {piece.tissue.status}
+                            </span>
+                          </p>
+                          <p className="space-x-1 text-gray-500">
+                            <span>IPS Recoleccion:</span>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                              {piece.tissue.ips}
+                            </span>
+                          </p>
+                          <p className="space-x-1 text-gray-500">
+                            <span>Fecha Recoleccion:</span>
+                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+                              {piece.tissue.collectedAt}
+                            </span>
+                          </p>
+                        </div>
+
+                        <div className="flex flex-col items-end text-right space-y-2 text-gray-500">
+                          {primeraMitad.map((inftest) => (
+                            <p key={inftest.id}>
+                              <span>{inftest.testName}: </span>
+                              <span
+                                className={`text-xs font-medium ms-1 px-2.5 py-0.5 rounded whitespace-nowrap bg-indigo-100 text-indigo-800`}
+                              >
+                                {inftest.result}
+                              </span>
+                            </p>
+                          ))}
+                        </div>
+                        <div className="flex flex-col text-right space-y-2 text-gray-500">
+                          {segundaMitad.map((inftest) => (
+                            <p key={inftest.id}>
+                              <span>{inftest.testName}: </span>
+                              <span
+                                className={`text-xs font-medium ms-1 px-2.5 py-0.5 rounded whitespace-nowrap bg-indigo-100 text-indigo-800`}
+                              >
+                                {inftest.result}
+                              </span>
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Accordion.Item>
+                );
+              })
+            ) : (
+              <p className="text-xl text-gray-500 font-bold pl-5">
+                No tenemos informacion para la trazabilidad ...
+              </p>
+            )}
+          </Accordion>
         </Tabs.Item>
       </Tabs>
       <AdminUserForm
