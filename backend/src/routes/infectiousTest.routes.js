@@ -6,6 +6,10 @@ import InfectiuousTestController from "../controllers/infectiuousTest.controller
 /** Instancia del enrutador */
 const router = Router();
 
+router.put(
+  "/set-all-results",
+  InfectiuousTestController.updateAllInfectiousTestWithValue
+);
 router.put("/:id", InfectiuousTestController.updateInfectiousTest);
 
 export default router;
