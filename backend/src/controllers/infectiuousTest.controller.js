@@ -40,6 +40,29 @@ async function updateInfectiousTest(req, res) {
   }
 }
 
+async function updateAllInfectiousTestWithValue(req, res) {
+  try {
+    const { tissueId } = req.body;
+    const [updatedInfectiousTest, infectiousTestError] =
+      await InfectiousTestService.updateAllInfectiousTestWithValue(
+        tissueId,
+        "No Reactivo"
+      );
+
+    if (infectiousTestError)
+      return respondError(req, res, 400, infectiousTestError);
+
+    respondSuccess(req, res, 200, updatedInfectiousTest);
+  } catch (error) {
+    handleError(
+      error,
+      "infectiousTest.controller -> updateAllInfectiousTestWithValue"
+    );
+    respondError(req, res, 400, error.message);
+  }
+}
+
 export default {
   updateInfectiousTest,
+  updateAllInfectiousTestWithValue,
 };

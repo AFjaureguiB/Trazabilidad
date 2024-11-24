@@ -53,6 +53,12 @@ async function updateInfectiousTest(testId, testData, user) {
       ? TissueStatus.ACCEPTED
       : "";
 
+    const quarantine = tissueFound.infectiousTests.every(
+      (test) => test.result === "No Realizado"
+    )
+      ? TissueStatus.QUARANTINE
+      : "";
+
     // Lógica para actualizar el `status` del tejido
     if (inTesting) {
       await tissueFound.update({ status: TissueStatus.IN_TESTING });
@@ -64,6 +70,9 @@ async function updateInfectiousTest(testId, testData, user) {
 
     if (accepted) {
       await tissueFound.update({ status: TissueStatus.ACCEPTED });
+    }
+    if (quarantine) {
+      await tissueFound.update({ status: TissueStatus.QUARANTINE });
     }
 
     // Comparar y loguear cambios
@@ -89,6 +98,43 @@ async function updateInfectiousTest(testId, testData, user) {
   }
 }
 
+async function updateAllInfectiousTestWithValue(tissueId, newValue) {
+  try {
+    const tissueFound = await Tissue.findByPk(tissueId, {
+      include: [
+        {
+          model: InfectiousTests,
+          as: "infectiousTests",
+        },
+      ],
+    });
+
+    if (!tissueFound) return [null, "El tejido no existe"];
+
+    await Promise.all(
+      tissueFound.infectiousTests.map((test) =>
+        test.update({ result: newValue })
+      )
+    );
+
+    await tissueFound.reload();
+
+    const accepted = tissueFound.infectiousTests.every(
+      (test) => test.result === "No Reactivo"
+    )
+      ? TissueStatus.ACCEPTED
+      : "";
+    if (accepted) {
+      await tissueFound.update({ status: TissueStatus.ACCEPTED });
+    }
+    return ["Pruebas actualizadas correctamente", null];
+  } catch (error) {
+    handleError(error, "infectiousTest.service -> updateInfectiousTest");
+    return [null, error.message];
+  }
+}
+
 export default {
   updateInfectiousTest,
+  updateAllInfectiousTestWithValue,
 };
