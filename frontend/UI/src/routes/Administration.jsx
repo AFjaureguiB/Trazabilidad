@@ -15,12 +15,14 @@ import { notifyError, notifySuccess } from "../utils/notifyToast.js";
 import Accordion from "../components/Accordion.jsx";
 import { getTrazabilityPiecesInShipments } from "../services/trazability.service.js";
 import PieceTrazabilityAccordionHeader from "../components/PieceTrazabilityAccordionHeader.jsx";
-import { TestResults } from "../constants/results.js";
+import { getShipments } from "../services/shipment.service";
+import DispatchShipmentAccordionHeader from "../components/DispatchShipmentAccordionHeader.jsx";
 
 const Administration = () => {
   const [logs, setLogs] = useState([]);
   const [users, setUsers] = useState([]);
   const [trazability, setTrazability] = useState([]);
+  const [shipments, setShipments] = useState([]);
 
   const [userAdminData, setUserAdminData] = useState({
     showUserAdminModal: false,
@@ -44,10 +46,16 @@ const Administration = () => {
     setTrazability(res);
   };
 
+  const fetchShipments = async () => {
+    const { data } = await getShipments();
+    setShipments(data);
+  };
+
   useEffect(() => {
     fetchLogs();
     fetchUsers();
     fetchTrazability();
+    fetchShipments();
   }, []);
 
   const handleDelete = async (id) => {
@@ -259,6 +267,66 @@ const Administration = () => {
               </p>
             )}
           </Accordion>
+        </Tabs.Item>
+        <Tabs.Item title="Despachos">
+          <div className="my-4">
+            <h6 className="text-xl text-gray-500 font-bold py-2">
+              Ordenes de despachos
+            </h6>
+          </div>
+          <div className="max-h-[700px] overflow-y-auto pb-4 px-2 custom-scrollbar">
+            <Accordion allowMultiple>
+              {shipments.length !== 0 ? (
+                shipments.map((shipment) => (
+                  <Accordion.Item
+                    key={shipment.id}
+                    header={<DispatchShipmentAccordionHeader />}
+                    shipment={shipment}
+                    className={
+                      "border border-gray-300 rounded-lg overflow-hidden"
+                    }
+                  >
+                    <div className="p-4 space-y-2">
+                      {shipment.pieces.map((piece) => (
+                        <div
+                          key={piece.id}
+                          className="bg-blue-50/50 border border-blue-200  py-4 px-6 rounded-md flex justify-between items-center gap-2 flex-wrap"
+                        >
+                          <div className="space-y-2">
+                            <p>
+                              Codigo:
+                              <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                {piece.code}
+                              </span>
+                            </p>
+
+                            <p>
+                              Referencia:
+                              <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                {piece.references}{" "}
+                              </span>
+                            </p>
+                          </div>
+                          <div className="space-y-2">
+                            <p>
+                              Descripcion:{" "}
+                              <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                {piece.description}
+                              </span>
+                            </p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </Accordion.Item>
+                ))
+              ) : (
+                <p className="text-xl text-gray-500 font-bold pl-5">
+                  No tenemos lotes de piezas ...
+                </p>
+              )}
+            </Accordion>
+          </div>
         </Tabs.Item>
       </Tabs>
       <AdminUserForm
