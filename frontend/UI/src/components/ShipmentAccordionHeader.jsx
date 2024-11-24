@@ -51,6 +51,12 @@ export default function ShipmentAccordionHeader({
             </span>
           </p>
           <p className="space-x-1 text-gray-500">
+            <span>Indicacion:</span>
+            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
+              {shipment.indication}
+            </span>
+          </p>
+          <p className="space-x-1 text-gray-500">
             <span>Fecha de envio:</span>
             <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
               {shipment.shippingdate}
