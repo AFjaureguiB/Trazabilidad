@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { useState } from "react";
 import { getAgeFromDate } from "../utils/getAgeFromDate";
 import { userRoles } from "../constants/user.roles.js";
@@ -11,6 +12,7 @@ export default function InfectiousTableRow({
   donor,
   user,
   setInfectiousTestsData,
+  handleSetAllResultsInfecTest,
 }) {
   const [expanded, setExpanded] = useState(false);
 
@@ -134,7 +136,7 @@ export default function InfectiousTableRow({
                         userRoles.ADMIN === user.role ? (
                           <button
                             className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
-                            title="Agregar pruebas"
+                            title="Agregar resultado de pruebas individuales"
                             onClick={() => {
                               setInfectiousTestsData({
                                 showCreateInfectiousTests: true,
@@ -149,6 +151,20 @@ export default function InfectiousTableRow({
                             ) : (
                               <span>Agregar resultados</span>
                             )}
+                          </button>
+                        ) : null}
+                        {tissue.status !== TissueStatus.ACCEPTED &&
+                        tissue.status !== TissueStatus.REJECTED &&
+                        userRoles.ASSISTANT === user.role ? (
+                          <button
+                            className="font-medium text-blue-600 flex gap-1 hover:underline items-center"
+                            title="Estableceer resultado de todas las pruebas en No Reactivo"
+                            onClick={() =>
+                              handleSetAllResultsInfecTest(tissue.id)
+                            }
+                          >
+                            <Pencil />
+                            <span>Todo en &apos;No reactivo&apos;</span>
                           </button>
                         ) : null}
                       </div>

@@ -6,6 +6,8 @@ import { getDonorsTissuesInfectiousTests } from "../services/donors.service";
 import { useEffect, useState } from "react";
 import InfectiousTableRow from "../components/InfectiousTableRow.jsx";
 import CreateInfectiousForm from "../components/CreateInfectiousForm.jsx";
+import { notifyError, notifySuccess } from "../utils/notifyToast.js";
+import { updateAllInfectiousTest } from "../services/infectiousTest.service.js";
 
 export default function InfectiousTests() {
   const [donors, setDonors] = useState([]);
@@ -32,6 +34,29 @@ export default function InfectiousTests() {
     fetchDonors();
   }, []);
 
+  const handleSetAllResultsInfecTest = async (tissueId) => {
+    try {
+      const {
+        state,
+        data,
+        message: messageError,
+      } = await updateAllInfectiousTest(tissueId);
+
+      if (state === "Error") {
+        notifyError(messageError);
+      }
+
+      if (state == "Success") {
+        notifySuccess(data);
+        fetchDonors(); //Hacemos un fetching de los donadores para ver el nuevo tejido en el donador
+      }
+    } catch (error) {
+      console.error(
+        "Error al establecer todos los valores de infectious test:",
+        error
+      );
+    }
+  };
   return (
     <>
       <div className="max-w-screen-2xl mx-auto">
@@ -73,6 +98,7 @@ export default function InfectiousTests() {
                     key={donor.id}
                     user={user}
                     setInfectiousTestsData={setInfectiousTestsData}
+                    handleSetAllResultsInfecTest={handleSetAllResultsInfecTest}
                   />
                 ))}
               </tbody>
