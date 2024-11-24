@@ -17,6 +17,7 @@ import { getTrazabilityPiecesInShipments } from "../services/trazability.service
 import PieceTrazabilityAccordionHeader from "../components/PieceTrazabilityAccordionHeader.jsx";
 import { getShipments } from "../services/shipment.service";
 import DispatchShipmentAccordionHeader from "../components/DispatchShipmentAccordionHeader.jsx";
+import DocumentArrowDown from "../components/icons/DocumentArrowDown.jsx";
 
 const Administration = () => {
   const [logs, setLogs] = useState([]);
@@ -132,7 +133,7 @@ const Administration = () => {
                     }
                   >
                     <div className="p-4">
-                      <div className="gap-2 text-left text-sm items-center justify-center grid grid-cols-5 grid-rows-1 w-full bg-blue-50/50 border border-blue-200 rounded-md p-4">
+                      <div className="gap-2 text-left text-sm items-center justify-center grid grid-cols-6 grid-rows-1 w-full bg-blue-50/50 border border-blue-200 rounded-md p-4">
                         <div>
                           {piece.batches.map((batch) => (
                             <div
@@ -218,6 +219,8 @@ const Administration = () => {
                               {piece.tissue.status}
                             </span>
                           </p>
+                        </div>
+                        <div className="flex flex-col gap-2 text-right text-sm">
                           <p className="space-x-1 text-gray-500">
                             <span>IPS Recoleccion:</span>
                             <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
@@ -229,6 +232,16 @@ const Administration = () => {
                             <span className="bg-indigo-100 text-indigo-800 text-xs font-medium me-2 px-2.5 py-0.5 rounded">
                               {piece.tissue.collectedAt}
                             </span>
+                          </p>
+                          <p className="space-x-1 text-gray-500">
+                            <a
+                              href={`http://localhost:4000/consentimiento/${piece.tissue.pdfpath}`}
+                              target="_blank"
+                              className="font-medium text-blue-600 hover:underline flex gap-1 justify-end"
+                            >
+                              <DocumentArrowDown />
+                              Consentimiento
+                            </a>
                           </p>
                         </div>
 
