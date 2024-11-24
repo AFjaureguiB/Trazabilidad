@@ -28,6 +28,7 @@ import sterilizationBatchRoutes from "../routes/sterilizationBatch.routes.js";
 
 import inventoryRoutes from "./inventory.routes.js";
 import shipmentRoutes from "./shipment.routes.js";
+import dispatchPDFRoutes from "./dispatchpdf.routes.js";
 
 /** Instancia del enrutador */
 const router = Router();
@@ -59,5 +60,7 @@ router.use(
 router.use("/inventory", inventoryRoutes);
 
 router.use("/shipment", authenticationMiddleware, shipmentRoutes);
+
+router.use("/dispatch-pdf", authenticationMiddleware, dispatchPDFRoutes);
 // Exporta el enrutador
 export default router;
