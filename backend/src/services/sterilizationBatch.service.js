@@ -170,8 +170,8 @@ export async function updateSterilizationBatchStatusAccordingChemicalTests(
       p.chemicalTests.slice(0, 1)
     );
 
-    // Si alguna prueba es "Reactivo", el estado es "rechazado"
-    const status = chemicalTests.some((test) => test.result === "Reactivo")
+    // Si alguna prueba es "No Aprobado", el estado es "rechazado"
+    const status = chemicalTests.some((test) => test.result === "No Aprobado")
       ? "Rechazado"
       : chemicalTests.length === 11
       ? "Aprobado"
