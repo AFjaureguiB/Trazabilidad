@@ -157,24 +157,24 @@ export default function CreatePieceTestForm({
                     <input
                       className="w-4 h-4"
                       type="radio"
-                      value="No Reactivo"
+                      value="Aprobado"
                       {...register("result", {
                         required: "Debes seleccionar una opción",
                       })}
                     />
-                    No Reactivo
+                    Aprobado
                   </label>
                 </div>
                 <label className="w-full py-2 text-sm font-medium text-gray-100 flex items-center gap-2">
                   <input
                     className="w-4 h-4"
                     type="radio"
-                    value="Reactivo"
+                    value="No Aprobado"
                     {...register("result", {
                       required: "Debes seleccionar un resultado",
                     })}
                   />
-                  Reactivo
+                  No Aprobado
                 </label>
                 {errors.result && (
                   <p className="text-red-400 text-sm">

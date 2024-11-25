@@ -139,9 +139,10 @@ export default function QualityControl() {
                                           Resultado:
                                           <span
                                             className={`text-xs font-medium px-2.5 py-0.5 rounded ${
-                                              chemTest.result === "No Reactivo"
+                                              chemTest.result === "Aprobado"
                                                 ? "bg-indigo-100 text-indigo-800"
-                                                : chemTest.result === "Reactivo"
+                                                : chemTest.result ===
+                                                  "No Aprobado"
                                                 ? "bg-red-100 text-red-800"
                                                 : ""
                                             }`}
@@ -149,6 +150,14 @@ export default function QualityControl() {
                                             {chemTest.result}
                                           </span>
                                         </p>
+                                        {chemTest.comment ? (
+                                          <p>
+                                            Comentarios:
+                                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                              {chemTest.comment}
+                                            </span>
+                                          </p>
+                                        ) : null}
                                       </div>
                                     ))
                                   : null}
@@ -268,9 +277,10 @@ export default function QualityControl() {
                                           Resultado:
                                           <span
                                             className={`text-xs font-medium px-2.5 py-0.5 rounded ${
-                                              chemTest.result === "No Reactivo"
+                                              chemTest.result === "Aprobado"
                                                 ? "bg-indigo-100 text-indigo-800"
-                                                : chemTest.result === "Reactivo"
+                                                : chemTest.result ===
+                                                  "No Aprobado"
                                                 ? "bg-red-100 text-red-800"
                                                 : ""
                                             }`}
@@ -278,6 +288,14 @@ export default function QualityControl() {
                                             {chemTest.result}
                                           </span>
                                         </p>
+                                        {chemTest.comment ? (
+                                          <p>
+                                            Comentarios:
+                                            <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                              {chemTest.comment}
+                                            </span>
+                                          </p>
+                                        ) : null}
                                       </div>
                                     ))
                                   : null}
@@ -389,11 +407,10 @@ export default function QualityControl() {
                                               Resultado:
                                               <span
                                                 className={`text-xs font-medium px-2.5 py-0.5 rounded ${
-                                                  chemTest.result ===
-                                                  "No Reactivo"
+                                                  chemTest.result === "Aprobado"
                                                     ? "bg-indigo-100 text-indigo-800"
                                                     : chemTest.result ===
-                                                      "Reactivo"
+                                                      "No Aprobado"
                                                     ? "bg-red-100 text-red-800"
                                                     : ""
                                                 }`}
@@ -401,6 +418,14 @@ export default function QualityControl() {
                                                 {chemTest.result}
                                               </span>
                                             </p>
+                                            {chemTest.comment ? (
+                                              <p>
+                                                Comentarios:
+                                                <span className="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded">
+                                                  {chemTest.comment}
+                                                </span>
+                                              </p>
+                                            ) : null}
                                           </div>
                                         ))
                                       : null}
