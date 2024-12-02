@@ -65,40 +65,46 @@ export default function AdminUsers() {
             </div>
           ) : null}
 
-          <div className="relative overflow-x-auto shadow-md sm:rounded-lg border">
-            <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
-              <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
-                <tr>
-                  <th scope="col" className="px-6 py-3">
-                    Nombre
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    DNI
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    Fecha de Nacimiento
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">edit</span>
-                  </th>
-                  <th scope="col" className="px-6 py-3">
-                    <span className="sr-only">expand</span>
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {donors.map((donor) => (
-                  <DonorTableRow
-                    donor={donor}
-                    key={donor.id}
-                    user={user}
-                    setAddTissueData={setAddTissueData}
-                    setEditDonorData={setEditDonorData}
-                  />
-                ))}
-              </tbody>
-            </table>
-          </div>
+          {donors ? (
+            <div className="relative overflow-x-auto shadow-md sm:rounded-lg border">
+              <table className="w-full text-sm text-left rtl:text-right text-gray-500 ">
+                <thead className="text-xs text-gray-700 uppercase bg-gray-200 ">
+                  <tr>
+                    <th scope="col" className="px-6 py-3">
+                      Nombre
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      DNI
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      Fecha de Nacimiento
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <span className="sr-only">edit</span>
+                    </th>
+                    <th scope="col" className="px-6 py-3">
+                      <span className="sr-only">expand</span>
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {donors.map((donor) => (
+                    <DonorTableRow
+                      donor={donor}
+                      key={donor.id}
+                      user={user}
+                      setAddTissueData={setAddTissueData}
+                      setEditDonorData={setEditDonorData}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <p className="text-sm text-left text-gray-500">
+              Aun no existen donantes
+            </p>
+          )}
         </div>
       </div>
 

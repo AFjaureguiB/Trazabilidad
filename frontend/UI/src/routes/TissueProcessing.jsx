@@ -114,28 +114,32 @@ export default function TissueProcessing() {
               </div>
               <div className="space-y-2">
                 <Accordion>
-                  {tissues.map((tissue) => (
-                    <Accordion.Item
-                      key={tissue.id}
-                      header={<TissueAccordionHeader />}
-                      tissue={tissue}
-                      setPieceData={setPieceData}
-                      className={
-                        "border border-green-200 rounded-lg overflow-hidden"
-                      }
-                    >
-                      <div className="p-4 space-y-2">
-                        {tissue.pieces.map((piece) => (
-                          <PieceAccordionItem
-                            key={piece.code}
-                            piece={piece}
-                            tissue={tissue}
-                            setPieceData={setPieceData}
-                          />
-                        ))}
-                      </div>
-                    </Accordion.Item>
-                  ))}
+                  {tissues ? (
+                    tissues.map((tissue) => (
+                      <Accordion.Item
+                        key={tissue.id}
+                        header={<TissueAccordionHeader />}
+                        tissue={tissue}
+                        setPieceData={setPieceData}
+                        className={
+                          "border border-green-200 rounded-lg overflow-hidden"
+                        }
+                      >
+                        <div className="p-4 space-y-2">
+                          {tissue.pieces.map((piece) => (
+                            <PieceAccordionItem
+                              key={piece.code}
+                              piece={piece}
+                              tissue={tissue}
+                              setPieceData={setPieceData}
+                            />
+                          ))}
+                        </div>
+                      </Accordion.Item>
+                    ))
+                  ) : (
+                    <p>Aún no hay tejidos...</p>
+                  )}
                 </Accordion>
               </div>
             </div>
