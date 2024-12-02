@@ -1,15 +1,18 @@
 import PDFDocument from "pdfkit-table";
 import { handleError } from "../utils/errorHandler.js";
+import path from "path";
 
 async function buildDispatchPDF(dataCallback, endCallback, shipment) {
   try {
     const doc = new PDFDocument({ margin: 30 });
 
+    const logoPath = path.resolve("public/logoFHD.png");
+
     doc.on("data", dataCallback);
     doc.on("end", endCallback);
 
     // Añadir el logo SVG
-    doc.image("public/logoFHD.png", {
+    doc.image(logoPath, {
       fit: [200, 250],
       align: "left",
       valign: "left",
